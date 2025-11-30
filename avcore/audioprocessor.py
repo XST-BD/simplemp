@@ -122,5 +122,72 @@
 # `ametadata`                     | Inspect metadata            |
 
 
-def smpaudioprocessor():
+import code
+from email.policy import default
+import os
+from random import sample
+
+import av
+import av.container
+import av.datasets
+
+import compatcheck
+
+def smpMediaProcessor(
+        inputfilename="",
+        outputfilename="", 
+        bitrate = None,
+        codec="",
+        samplerate = None,
+        frames="",
+        channels="",
+        sample_fmt="",
+        mute=False,
+        mapstream=False,
+
+        # debug
+        debug=False,
+):
     
+    if not inputfilename or not os.path.exists(inputfilename): 
+        print("SimpleMP: Input file doesn't exist")
+        return
+
+    if not outputfilename: 
+        print("SimpleMP: Output file not specified")
+        return
+     
+    if not os.path.exists(outputfilename):
+        print("SimpleMP: Output file doesn't exist")
+        return
+
+    input = av.open(str(inputfilename))
+    
+    # check file extenstion compatibility with settings
+
+    ext = os.path.splitext(outputfilename)[1].lower()
+
+    # ========== DEBUG ==========   
+
+    if debug: 
+        print(
+            "Information about input file:\n"
+            f"Bitrate:      {input.bit_rate}\n"
+            f"Container:    {input.format.name}\n"
+            f"Duration:     {input.duration} ms\n"
+        )
+
+        if input.streams.audio:
+            print("Audio stream: exists")
+
+        if input.streams.video:
+            print("Video stream: exists")
+
+    # ========== DEBUG ===========  
+
+    if not compatcheck.checkMediaCompatibility(ext, codec, bitrate, samplerate):
+        return
+
+    
+smpMediaProcessor("/home/pancake/Projects/simplemp/dump/testaudio.wav", 
+                  "some.mp3", debug=True)
