@@ -1,12 +1,16 @@
 import av
 import av.datasets
 
-input = av.open(av.datasets.curated("/home/pancake/Downloads/NRS.mp4"))
-output = av.open("/home/pancake/Projects/simplemp/dump/test.mkv", "w") 
+input = av.open(av.datasets.curated("/home/pancake/Music/palpal.mp3"))
+output = av.open("/home/pancake/Projects/simplemp/dump/testaudio.wav", "w") 
 
 stream_map = {}
 
 for istream in input.streams:
+
+    if istream.type != "audio":
+        continue
+
     ostream = output.add_stream_from_template(istream)
     stream_map[istream.index] = ostream
 
