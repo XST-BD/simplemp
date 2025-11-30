@@ -1,28 +1,29 @@
+from random import sample
 import audiocompat
 import imagecompat
 import subtcompat
 import vdocompat
 
-def checkMediaCompatibility(ext, codec, bitrate, samplerate) -> bool:
+def checkMediaCompatibility(ext, codec, bitrate, samplerate, sample_fmt) -> bool:
     match ext:
 
         # AUDIO
 
         # ---- AAC family ----
         case ".aac":
-            return audiocompat.isAACcompatible()
+            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
 
         case ".m4a":
-            return audiocompat.isAACcompatible()
+            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
 
         case ".mp4":
-            return audiocompat.isAACcompatible()
+            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
 
         case ".3gp":
-            return audiocompat.isAACcompatible()
+            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
 
         case ".adts":
-            return audiocompat.isAACcompatible()
+            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
 
         # ---- MP3 ----
         case ".mp3":
@@ -30,7 +31,7 @@ def checkMediaCompatibility(ext, codec, bitrate, samplerate) -> bool:
 
         # ---- WAV / PCM ----
         case ".wav":
-            return audiocompat.isWAVCompatible()
+            return audiocompat.isWAVCompatible(codec, samplerate)
 
         case ".aiff" | ".aif":
             return audiocompat.isAIFFCompatible()
@@ -59,7 +60,7 @@ def checkMediaCompatibility(ext, codec, bitrate, samplerate) -> bool:
 
         # ---- ALAC ----
         case ".alac":
-            return audiocompat.isALACCompatible()
+            return audiocompat.isALACCompatible(codec, samplerate, sample_fmt)
 
 
         # IMAGE

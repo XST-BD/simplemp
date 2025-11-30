@@ -132,6 +132,7 @@ import av.container
 import av.datasets
 
 import compatcheck
+import debuglog
 
 def smpMediaProcessor(
         inputfilename="",
@@ -149,6 +150,8 @@ def smpMediaProcessor(
         debug=False,
 ):
     
+    # ===== check file existence
+
     if not inputfilename or not os.path.exists(inputfilename): 
         print("SimpleMP: Input file doesn't exist")
         return
@@ -163,29 +166,15 @@ def smpMediaProcessor(
 
     input = av.open(str(inputfilename))
     
-    # check file extenstion compatibility with settings
+    # ==== debug
+
+    debuglog.debuglog(input, debug)
+
+    # ==== check file extenstion compatibility with settings
 
     ext = os.path.splitext(outputfilename)[1].lower()
 
-    # ========== DEBUG ==========   
-
-    if debug: 
-        print(
-            "Information about input file:\n"
-            f"Bitrate:      {input.bit_rate}\n"
-            f"Container:    {input.format.name}\n"
-            f"Duration:     {input.duration} ms\n"
-        )
-
-        if input.streams.audio:
-            print("Audio stream: exists")
-
-        if input.streams.video:
-            print("Video stream: exists")
-
-    # ========== DEBUG ===========  
-
-    if not compatcheck.checkMediaCompatibility(ext, codec, bitrate, samplerate):
+    if not compatcheck.checkMediaCompatibility(ext, codec, bitrate, samplerate, sample_fmt):
         return
 
     
