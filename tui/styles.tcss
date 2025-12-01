@@ -1,0 +1,39 @@
+VerticalScroll {
+    min-height: 100vh;
+}
+
+Container {
+    height: auto;
+}
+
+Horizontal {
+    height: auto;
+}
+
+Input {
+    width: 1fr;
+}
+
+Label {
+    padding: 1;
+    padding-bottom: 0;
+}
+
+Checkbox {
+    width: 1fr;
+}
+
+RadioSet {
+    max-height: 6;
+}
+
+RadioSet.hidden {
+    display: none;
+}
+
+#button_container {
+    layout: horizontal;
+    align-horizontal: center;
+    margin-top: 1;
+    margin-bottom: 1;
+}
