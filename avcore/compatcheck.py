@@ -28,51 +28,51 @@ codec_dict = {
 
     # Images
 
-    ".png"  : ["png"],
-    ".jpg"  : ["mjpeg"],    # FFmpeg encoder name for JPEG
-    ".jpeg" : ["mjpeg"],
-    ".webp" : ["webp"],
     ".bmp"  : ["bmp"],
-    ".tiff" : ["tiff"],
-    ".tif"  : ["tiff"],
     ".gif"  : ["gif"],
     ".ico"  : ["ico"],
+    ".jpg"  : ["mjpeg"],    # FFmpeg encoder name for JPEG
+    ".jpeg" : ["mjpeg"],
+    ".png"  : ["png"],
     ".pbm"  : ["pbm"],
     ".pgm"  : ["pgm"],
-    ".ppm"  : ["ppm"],
     ".pnm"  : ["pnm"],
+    ".ppm"  : ["ppm"],
     ".svg"  : [],   # FFmpeg can read, not encode
+    ".tif"  : ["tiff"],
+    ".tiff" : ["tiff"],
+    ".webp" : ["webp"],
 
 
     # Subtitles
 
-    ".srt"  : ["subrip"],
     ".ass"  : ["ass"],
+    ".dfxp" : ["ttml"],
+    ".idx"  : ["vobsub"],     # VobSub (DVD bitmap) .idx+.sub pair
+    ".scc"  : ["scc"],        # Scenarist Closed Caption
+    ".srt"  : ["subrip"],
     ".ssa"  : ["ssa"],
-    ".vtt"  : ["webvtt"],
+    ".stl"  : ["ebu_stl"],    # EBU STL broadcast subs
     ".sub"  : ["microdvd"],   # text-based MicroDVD subtitles
     ".sup"  : ["pgssub"],     # Blu-ray PGS bitmap subtitles
-    ".scc"  : ["scc"],        # Scenarist Closed Caption
     ".ttml" : ["ttml"],
-    ".dfxp" : ["ttml"],
-    ".stl"  : ["ebu_stl"],    # EBU STL broadcast subs
-    ".idx"  : ["vobsub"],     # VobSub (DVD bitmap) .idx+.sub pair
+    ".vtt"  : ["webvtt"],
 
     # Video
 
-    ".mp4"  : ["h264", "hevc", "mpeg4", "libx264", "libx265", "libopenh264", "av1"],
-    ".mkv"  : ["h264", "hevc", "mpeg4", "vp8", "vp9", "av1"],
-    ".mov"  : ["h264", "hevc", "prores", "mpeg4"],
-    ".webm" : ["vp8", "vp9", "av1"],
+    ".3gp"  : ["h264", "mpeg4"],
+    ".asf"  : ["wmv1", "wmv2", "wmv3"],
     ".avi"  : ["mpeg4", "h264", "hevc"],
     ".flv"  : ["flv", "h264"],
-    ".ts"   : ["h264", "hevc", "mpeg2video"],
-    ".mpeg" : ["mpeg1video", "mpeg2video"],
-    ".mpg"  : ["mpeg1video", "mpeg2video"],
     ".m4v"  : ["h264", "mpeg4"],
-    ".3gp"  : ["h264", "mpeg4"],
+    ".mov"  : ["h264", "hevc", "prores", "mpeg4"],
+    ".mp4"  : ["h264", "hevc", "mpeg4", "libx264", "libx265", "libopenh264", "av1"],
+    ".mpg"  : ["mpeg1video", "mpeg2video"],
+    ".mpeg" : ["mpeg1video", "mpeg2video"],
+    ".mkv"  : ["h264", "hevc", "mpeg4", "vp8", "vp9", "av1"],
+    ".ts"   : ["h264", "hevc", "mpeg2video"],
+    ".webm" : ["vp8", "vp9", "av1"],
     ".wmv"  : ["wmv1", "wmv2", "wmv3"],
-    ".asf"  : ["wmv1", "wmv2", "wmv3"],
 }
 
 bitrate_range_dict = {
@@ -153,7 +153,7 @@ samplerate_range_dict = {
     "pcm_u8": [8000, 192000]
 }
 
-sample_format_dict = {
+audio_sample_fmt_dict = {
 
     # Lossless PCM
     "pcm_u8": ["pcm_u8"],
@@ -188,6 +188,70 @@ sample_format_dict = {
     "wmav2": None,
     "wmapro": None,
     "wmalossless": None
+}
+
+video_sample_fmt_dict = {
+    # Common H.264 / H.265 codecs
+    "h264": ["yuv420p", "yuv422p", "yuv444p", "nv12", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+    "hevc": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+
+    # VP8 / VP9
+    "vp8": ["yuv420p", "yuv422p", "yuv444p"],
+    "vp9": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+
+    # AV1
+    "av1": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+
+    # MPEG-2 / MPEG-4
+    "mpeg2video": ["yuv420p", "yuv422p", "yuv444p"],
+    "mpeg4": ["yuv420p", "yuv422p", "yuv444p"],
+
+    # Lossless / uncompressed video
+    "rawvideo": ["rgb24", "bgr24", "rgba", "bgra", "yuv420p", "yuv422p", "yuv444p", "gray", "yuv420p10le", "yuv422p10le"],
+
+    # Others
+    "prores": ["yuv422p", "yuv422p10le", "yuv444p10le"],
+    "dnxhd": ["yuv422p", "yuv422p10le"],
+
+    # Placeholder for other codecs, default to common 8-bit YUV
+    "default": ["yuv420p", "yuv422p", "yuv444p", "rgb24"]
+}
+
+
+media_type_ext_dict = {
+    "audio": [
+        ".3gp", ".aac", ".adts", ".aif", ".aifc", ".aiff", ".alac", ".amr", ".awb", 
+        ".flac", 
+        ".m4a", ".mp3", "mp4", 
+        ".oga", ".ogg", ".opus", 
+        ".wav", ".wma" 
+    ],
+    "image": [
+        ".bmp", 
+        ".gif", 
+        ".ico", 
+        ".jpg", ".jpeg", 
+        ".png", ".pbm", ".pgm", ".pnm", ".ppm", 
+        ".svg", 
+        ".tif", ".tiff", 
+        ".webp",
+    ],
+    "subtitle": [
+        ".ass",
+        ".dfxp",
+        ".idx",
+        ".scc", ".srt", ".ssa", ".stl", ".sub", ".sup",
+        ".ttml",
+        ".vtt",
+    ],
+    "video": [
+        ".3gp",
+        ".asf", ".avi"
+        ".flv",
+        ".m4v" , ".mkv", ".mov", ".mp4", ".mpg", "mpeg",
+        ".ts",
+        ".webm", ".wmv",
+    ],
 }
 
 
@@ -247,33 +311,52 @@ def checkSamplerateCompatibility(codecname, samplerate) -> bool:
 
     return True
 
-def checkSamplefmtCompatibility(codecname, sample_fmt) -> bool:
+def checkAudioSamplefmtCompatibility(codecname, sample_fmt) -> bool:
 
     # irrelevant for lossy codecs
-    if sample_format_dict.get(codecname) is None: 
+    if audio_sample_fmt_dict.get(codecname) is None: 
         return True
 
-    if sample_fmt not in sample_format_dict[codecname]:
+    if sample_fmt not in audio_sample_fmt_dict[codecname]:
         print(f"SampleMP: Incompatible sample format for codec: {codecname}"
               "Supported sample formats: "
-              f"{sample_format_dict[codecname]}") 
+              f"{audio_sample_fmt_dict[codecname]}") 
         return False
     
     return True 
 
-# TODO: Add media type check
+def checkVideoSamplefmtCompatibility(codecname, sample_fmt) -> bool:
+
+    if sample_fmt not in video_sample_fmt_dict[codecname]:
+        print(f"SampleMP: Incompatible sample format for codec: {codecname}"
+              "Supported sample formats: "
+              f"{video_sample_fmt_dict[codecname]}") 
+        return False
+    
+    return True 
+
 def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate) -> bool: 
+
+
+    mediatype = -1
+
+    if ext in media_type_ext_dict["audio"]: mediatype = 0
+    if ext in media_type_ext_dict["image"]: mediatype = 1
+    if ext in media_type_ext_dict["subtitle"]: mediatype = 2
+    if ext in media_type_ext_dict["video"]: mediatype = 3
 
     if not checkCodecCompatibility(ext, codecname): 
         return False
     
-    if not checkBitrateCompatibility(codecname, bitrate): 
-        return False
-    
-    if not checkSamplerateCompatibility(codecname, samplerate): 
-        return False
-
-    if not checkSamplefmtCompatibility(codecname, samplefmt): 
-        return False
+    match mediatype: 
+        # Audio
+        case 0:
+            if not checkBitrateCompatibility(codecname, bitrate): return False
+            if not checkSamplerateCompatibility(codecname, samplerate): return False
+            if not checkAudioSamplefmtCompatibility(codecname, samplefmt): return False
+        # Video
+        case 3: 
+            if not checkBitrateCompatibility(codecname, bitrate): return False
+            if not checkVideoSamplefmtCompatibility(codecname, samplefmt): return False
 
     return True

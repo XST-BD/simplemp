@@ -3,6 +3,8 @@ from email.policy import default
 import os
 from random import sample
 
+from typing import Optional, Tuple
+
 import av
 import av.container
 import av.datasets
@@ -60,7 +62,8 @@ def smpMediaProcessor(
     format_out: str = "",           # e.g., png, jpg, bmp
     compression_level: int = 6,     # for PNG, WebP, etc.
     quality: int = 85,              # JPEG / WebP quality 0-100
-    resize: tuple[int,int],         # (width, height)
+    resize: Optional[Tuple[int,int]] = None,         
+                                    # (width, height)
     rotate_image: int = 0,          # image rotation
     flip: str = "",                 # horizontal / vertical / both
     color_space: str = "",          # e.g., rgb24, gray
