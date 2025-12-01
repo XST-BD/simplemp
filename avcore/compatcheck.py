@@ -261,6 +261,7 @@ def checkSamplefmtCompatibility(codecname, sample_fmt) -> bool:
     
     return True 
 
+# TODO: Add media type check
 def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate) -> bool: 
 
     if not checkCodecCompatibility(ext, codecname): 
