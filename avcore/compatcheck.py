@@ -1,187 +1,278 @@
 from random import sample
-import audiocompat
-import imagecompat
-import subtcompat
-import vdocompat
 
-def checkMediaCompatibility(ext, codec, bitrate, samplerate, sample_fmt) -> bool:
-    match ext:
+codec_dict = {
 
-        # AUDIO
+    # Audio
 
-        # ---- AAC family ----
-        case ".aac":
-            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
+    ".3gp"  : ["aac", "aac (fdk)"],
+    ".aac"  : ["aac", "aac (fdk)"],
+    ".adts" : ["aac", "aac (fdk)"],
+    ".aif"  : ["pcm_s8", "pcm_s16be", "pcm_s24be", "pcm_s32be", "pcm_f32be", "pcm_f64be"],
+    ".aifc" : ["pcm_s8", "pcm_s16be", "pcm_s24be", "pcm_s32be", "pcm_f32be", "pcm_f64be"],
+    ".aiff" : ["pcm_s8", "pcm_s16be", "pcm_s24be", "pcm_s32be", "pcm_f32be", "pcm_f64be"],
+    ".alac" : ["alac"],
+    ".amr"  : ["amr_nb", "amr_wb"],
+    ".awb"  : ["amr_wb"],
+    ".flac" : ["flac"],
+    ".m4a"  : ["aac", "aac (fdk)"],
+    ".mp3"  : ["mp3"],
+    ".mp4"  : ["aac", "aac (fdk)"],
+    ".oga"  : ["vorbis", "opus", "flac", "speex"],
+    ".ogg"  : ["vorbis", "opus", "flac", "speex"],
+    ".opus" : ["opus"],
+    ".wav"  : ["pcm_alaw", "pcm_mulaw", 
+               "pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_f32le", "pcm_f64le", 
+               "pcm_s16be", "pcm_s24be", "pcm_s32be", "pcm_f32be", "pcm_f64be", 
+               "pcm_u8"], 
+    ".wma"  : ["wmav1", "wmav2", "wmapro", "wmalossless"],
 
-        case ".m4a":
-            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
+    # Images
 
-        case ".mp4":
-            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
-
-        case ".3gp":
-            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
-
-        case ".adts":
-            return audiocompat.isAACcompatible(ext, codec, bitrate, samplerate)
-
-        # ---- MP3 ----
-        case ".mp3":
-            return audiocompat.isMP3Compatible(codec, bitrate, samplerate)
-
-        # ---- WAV / PCM ----
-        case ".wav":
-            return audiocompat.isWAVCompatible(codec, samplerate)
-
-        case ".aiff" | ".aif":
-            return audiocompat.isAIFFCompatible()
-
-        # ---- Ogg / Vorbis / Opus ----
-        case ".ogg":
-            return audiocompat.isOggCompatible()
-
-        case ".opus":
-            return audiocompat.isOpusCompatible()
-
-        # ---- FLAC ----
-        case ".flac":
-            return audiocompat.isFLACCompatible()
-
-        # ---- WMA ----
-        case ".wma":
-            return audiocompat.isWMACompatible()
-
-        # ---- AMR (narrowband & wideband) ----
-        case ".amr":
-            return audiocompat.isAMRCompatible()
-
-        case ".awb":
-            return audiocompat.isAWBCompatible()
-
-        # ---- ALAC ----
-        case ".alac":
-            return audiocompat.isALACCompatible(codec, samplerate, sample_fmt)
+    ".png"  : ["png"],
+    ".jpg"  : ["mjpeg"],    # FFmpeg encoder name for JPEG
+    ".jpeg" : ["mjpeg"],
+    ".webp" : ["webp"],
+    ".bmp"  : ["bmp"],
+    ".tiff" : ["tiff"],
+    ".tif"  : ["tiff"],
+    ".gif"  : ["gif"],
+    ".ico"  : ["ico"],
+    ".pbm"  : ["pbm"],
+    ".pgm"  : ["pgm"],
+    ".ppm"  : ["ppm"],
+    ".pnm"  : ["pnm"],
+    ".svg"  : [],   # FFmpeg can read, not encode
 
 
-        # IMAGE
-        case ".jpg" | ".jpeg":
-            return imagecompat.isJPEGcompatible()
+    # Subtitles
 
-        case ".png":
-            return imagecompat.isPNGcompatible()
+    ".srt"  : ["subrip"],
+    ".ass"  : ["ass"],
+    ".ssa"  : ["ssa"],
+    ".vtt"  : ["webvtt"],
+    ".sub"  : ["microdvd"],   # text-based MicroDVD subtitles
+    ".sup"  : ["pgssub"],     # Blu-ray PGS bitmap subtitles
+    ".scc"  : ["scc"],        # Scenarist Closed Caption
+    ".ttml" : ["ttml"],
+    ".dfxp" : ["ttml"],
+    ".stl"  : ["ebu_stl"],    # EBU STL broadcast subs
+    ".idx"  : ["vobsub"],     # VobSub (DVD bitmap) .idx+.sub pair
 
-        case ".bmp":
-            return imagecompat.isBMPcompatible()
+    # Video
 
-        case ".gif":
-            return imagecompat.isGIFcompatible()
+    ".mp4"  : ["h264", "hevc", "mpeg4", "libx264", "libx265", "libopenh264", "av1"],
+    ".mkv"  : ["h264", "hevc", "mpeg4", "vp8", "vp9", "av1"],
+    ".mov"  : ["h264", "hevc", "prores", "mpeg4"],
+    ".webm" : ["vp8", "vp9", "av1"],
+    ".avi"  : ["mpeg4", "h264", "hevc"],
+    ".flv"  : ["flv", "h264"],
+    ".ts"   : ["h264", "hevc", "mpeg2video"],
+    ".mpeg" : ["mpeg1video", "mpeg2video"],
+    ".mpg"  : ["mpeg1video", "mpeg2video"],
+    ".m4v"  : ["h264", "mpeg4"],
+    ".3gp"  : ["h264", "mpeg4"],
+    ".wmv"  : ["wmv1", "wmv2", "wmv3"],
+    ".asf"  : ["wmv1", "wmv2", "wmv3"],
+}
 
-        case ".tiff" | ".tif":
-            return imagecompat.isTIFFcompatible()
+bitrate_range_dict = {
 
-        case ".webp":
-            return imagecompat.isWEBPcompatible()
+    # Compressed audio codecs
+    "aac": [64000, 320000],
+    "aac (fdk)": [64000, 320000],
+    "amr_nb": [4750, 12200],       # AMR Narrowband
+    "amr_wb": [6600, 23850],       # AMR Wideband
+    "mp3": [64000, 320000],
+    "opus": [6000, 510000],        # 6 kbps → 510 kbps
+    "vorbis": [16000, 500000],     # Ogg Vorbis
+    "speex": [2000, 44100],        # Narrowband / wideband
+    "wmav1": [12000, 384000], 
+    "wmav2": [12000, 384000], 
+    "wmapro": [12000, 384000], 
+    "wmalossless": [12000, 384000], # technically lossless can vary
 
-        case ".avif":
-            return imagecompat.isAVIFcompatible()
+    # Lossless / PCM codecs → bitrate irrelevant
+    "alac": None,
+    "flac": None,
+    "pcm_alaw": None,
+    "pcm_mulaw": None,
+    "pcm_s16le": None,
+    "pcm_s24le": None,
+    "pcm_s32le": None,
+    "pcm_f32le": None,
+    "pcm_f64le": None,
+    "pcm_s16be": None,
+    "pcm_s24be": None,
+    "pcm_s32be": None,
+    "pcm_f32be": None,
+    "pcm_f64be": None,
+    "pcm_u8": None
+}
 
-        case ".heic" | ".heif":
-            return imagecompat.isHEIFcompatible()
+samplerate_range_dict = {
 
-        case ".ppm" | ".pgm" | ".pbm" | ".pnm":
-            return imagecompat.isPNMcompatible()
+    # AAC
+    "aac": [32000, 48000],
+    "aac (fdk)": [32000, 48000],
 
-        case ".svg":
-            return imagecompat.isSVGcompatible()
+    # MP3
+    "mp3": [32000, 48000],
 
-        case ".ico":
-            return imagecompat.isICOcompatible()
+    # Opus
+    "opus": [8000, 48000],
 
-        # SUBTITLE
-        case ".srt":
-            return subtcompat.isSRTcompatible()
+    # Ogg codecs
+    "vorbis": [32000, 48000],
+    "speex": [8000, 48000],
 
-        case ".ass" | ".ssa":
-            return subtcompat.isASScompatible()
+    # AMR
+    "amr_nb": [8000, 8000],      # fixed 8kHz
+    "amr_wb": [16000, 16000],    # fixed 16kHz
 
-        case ".vtt":
-            return subtcompat.isVTTcompatible()
+    # WMA
+    "wmav1": [8000, 48000],
+    "wmav2": [8000, 48000],
+    "wmapro": [8000, 48000],
+    "wmalossless": [8000, 48000],
 
-        case ".sub":
-            return subtcompat.isSUBcompatible()
+    # Lossless / PCM
+    "alac": [8000, 192000],
+    "flac": [8000, 192000],
+    "pcm_alaw": [8000, 192000],
+    "pcm_mulaw": [8000, 192000],
+    "pcm_s16le": [8000, 192000],
+    "pcm_s24le": [8000, 192000],
+    "pcm_s32le": [8000, 192000],
+    "pcm_f32le": [8000, 192000],
+    "pcm_f64le": [8000, 192000],
+    "pcm_s16be": [8000, 192000],
+    "pcm_s24be": [8000, 192000],
+    "pcm_s32be": [8000, 192000],
+    "pcm_f32be": [8000, 192000],
+    "pcm_f64be": [8000, 192000],
+    "pcm_u8": [8000, 192000]
+}
 
-        case ".idx":
-            return subtcompat.isIDXcompatible()
+sample_format_dict = {
 
-        case ".ttml" | ".dfxp":
-            return subtcompat.isTTMLcompatible()
+    # Lossless PCM
+    "pcm_u8": ["pcm_u8"],
+    "pcm_s8": ["pcm_s8"],
+    "pcm_s16le": ["pcm_s16le"],
+    "pcm_s16be": ["pcm_s16be"],
+    "pcm_s24le": ["pcm_s24le"],
+    "pcm_s24be": ["pcm_s24be"],
+    "pcm_s32le": ["pcm_s32le"],
+    "pcm_s32be": ["pcm_s32be"],
+    "pcm_f32le": ["pcm_f32le"],
+    "pcm_f32be": ["pcm_f32be"],
+    "pcm_f64le": ["pcm_f64le"],
+    "pcm_f64be": ["pcm_f64be"],
+    "pcm_alaw": ["pcm_alaw"],
+    "pcm_mulaw": ["pcm_mulaw"],
 
-        case ".smi" | ".sami":
-            return subtcompat.isSMIcompatible()
+    # Lossless compressed
+    "flac": ["pcm_s16le", "pcm_s24le", "pcm_s32le"],
+    "alac": ["pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_f32le", "pcm_s16be", "pcm_s24be", "pcm_s32be", "pcm_f32be"],
 
-        case ".lrc":
-            return subtcompat.isLRCcompatible()
-
-        case ".stl":
-            return subtcompat.isSTLcompatible()
-
-        case ".sbv":
-            return subtcompat.isSBVcompatible()
-
-        case ".json":
-            return subtcompat.isJSONSubtitleCompatible()
-
-        # VIDEO
-        case ".mp4":
-            return vdocompat.isMP4compatible()
-
-        case ".mkv":
-            return vdocompat.isMKVcompatible()
-
-        case ".mov":
-            return vdocompat.isMOVcompatible()
-
-        case ".avi":
-            return vdocompat.isAVIcompatible()
-
-        case ".wmv":
-            return vdocompat.isWMVcompatible()
-
-        case ".flv":
-            return vdocompat.isFLVcompatible()
-
-        case ".webm":
-            return vdocompat.isWEBMcompatible()
-
-        case ".mpeg" | ".mpg":
-            return vdocompat.isMPEGcompatible()
-
-        case ".ts" | ".m2ts":
-            return vdocompat.isTScompatible()
-
-        case ".3gp":
-            return vdocompat.is3GPcompatible()
-
-        case ".ogv":
-            return vdocompat.isOGVcompatible()
-
-        case ".mpv":
-            return vdocompat.isMPVcompatible()
-
-        case ".f4v":
-            return vdocompat.isF4Vcompatible()
-
-        case ".rm" | ".rmvb":
-            return vdocompat.isRMcompatible()
-
-        case ".asf":
-            return vdocompat.isASFcompatible()
-
-        case ".divx":
-            return vdocompat.isDIVXcompatible()
+    # Compressed formats (bit depth is internal / fixed)
+    "aac": None,
+    "aac (fdk)": None,
+    "mp3": None,
+    "opus": None,
+    "vorbis": None,
+    "speex": None,
+    "amr_nb": None,
+    "amr_wb": None,
+    "wmav1": None,
+    "wmav2": None,
+    "wmapro": None,
+    "wmalossless": None
+}
 
 
-        # ---- Default fallback ----
-        case _:
-            print(f"SimpleMP: Unsupported or unknown output extension '{ext}'")
+def checkCodecCompatibility(ext, codecname) -> bool:
+
+    # 1: Check extension
+    if ext not in codec_dict: 
+        print(f"SimpleMP: Unknownn media file extension: {codecname}")
+        return False
+
+    # 2: Check codec existence
+    all_codecs = {c for codecs in codec_dict.values() for c in codecs}
+    if codecname not in all_codecs:
+        print(f"SimpleMP: Unknown codec found: {codecname}")
+        return False
+
+    # 3: Check codec compatibility with file extension
+    if codecname not in codec_dict[ext]: 
+        print(f"SimpleMP: Unsupported codec for converstion to {ext}"
+              f"Supported codecs are:"
+              f"{codec_dict[ext]}")
+        return False
+
+    return True
+
+def checkBitrateCompatibility(codecname, bitrate) -> bool:
+
+    # irrelevant for lossless codecs
+    if bitrate_range_dict.get(codecname) is None: 
+        return True
+
+    if bitrate < bitrate_range_dict[codecname][0] or bitrate > bitrate_range_dict[codecname][1]: 
+        print(f"SimpleMP: Bitrate outside safe range for codec: {codecname}"
+              f"Safe range: [{bitrate_range_dict[codecname][0]},{bitrate_range_dict[codecname][1]}]")
+        return False
+
+    return True
+
+def checkSamplerateCompatibility(codecname, samplerate) -> bool:
+
+    # fixed sample rate for amr_nb and amr_wb
+    if codecname == "amr_nb": 
+        if samplerate != 8000: 
+            print(f"SimpleMP: Only 8khz sample rate allowed for codec: {codecname}")
             return False
+
+    if codecname == "amr_wb": 
+        if samplerate != 16000: 
+            print(f"SimpleMP: Only 16khz sample rate allowed for codec: {codecname}")
+            return False
+
+
+    if samplerate < samplerate_range_dict[codecname][0] or samplerate > samplerate_range_dict[codecname][1]: 
+        print(f"SimpleMP: Sample rate outside safe range for codec: {codecname}"
+              f"Safe range: [{samplerate_range_dict[codecname][0]},{samplerate_range_dict[codecname][1]}]")
+        return False
+
+    return True
+
+def checkSamplefmtCompatibility(codecname, sample_fmt) -> bool:
+
+    # irrelevant for lossy codecs
+    if sample_format_dict.get(codecname) is None: 
+        return True
+
+    if sample_fmt not in sample_format_dict[codecname]:
+        print(f"SampleMP: Incompatible sample format for codec: {codecname}"
+              "Supported sample formats: "
+              f"{sample_format_dict[codecname]}") 
+        return False
+    
+    return True 
+
+def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate) -> bool: 
+
+    if not checkCodecCompatibility(ext, codecname): 
+        return False
+    
+    if not checkBitrateCompatibility(codecname, bitrate): 
+        return False
+    
+    if not checkSamplerateCompatibility(codecname, samplerate): 
+        return False
+
+    if not checkSamplefmtCompatibility(codecname, samplefmt): 
+        return False
+
+    return True

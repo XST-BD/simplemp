@@ -170,7 +170,7 @@ def smpMediaProcessor(
 
     debuglog.debuglog(input, debug)
 
-    # ==== check file extenstion compatibility with settings
+    # ==== check file extenstion and codec compatibility with settings
 
     ext = os.path.splitext(outputfilename)[1].lower()
 
