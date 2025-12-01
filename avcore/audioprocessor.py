@@ -12,7 +12,7 @@ import av.datasets
 import compatcheck
 import debuglog
 
-
+import simplempcore
 
 def smpMediaProcessor(
     # --------------------
@@ -79,7 +79,7 @@ def smpMediaProcessor(
 ):
     """
     Unified media processor function for audio, video, image, and subtitles.
-
+    
     Parameters grouped by media type and relevance.
     """
     
@@ -100,12 +100,21 @@ def smpMediaProcessor(
     input = av.open(str(inputfilename))
     
     # ==== debug
-
     debuglog.debuglog(input, debug)
 
     # ==== check file extenstion and codec compatibility with settings
-
     ext = os.path.splitext(outputfilename)[1].lower()
-
-    if not compatcheck.checkMediaCompatibility(ext, codec, bitrate, samplerate, sample_fmt):
+    if not compatcheck.checkMediaCompatibility(ext, codec, samplerate, sample_fmt, bitrate):
         return
+    
+    simplempcore.smpcore(inputfilename, outputfilename, codec, bitrate, samplerate, sample_fmt)
+
+
+
+smpMediaProcessor("../dump/testaudio.flac", 
+                  "../dump/some.mp3",
+                  codec="mp3", 
+                  bitrate=68000, 
+                  samplerate=48000, 
+                  sample_fmt="",
+                  debug=False)
