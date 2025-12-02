@@ -9,8 +9,8 @@ import av
 import av.container
 import av.datasets
 
-from . import compatcheck
-from . import debuglog
+import compatcheck
+import debuglog
 
 import simplempcore
 
@@ -41,7 +41,7 @@ def smpMediaProcessor(
     codec_video: str = "",          # video codec to use for conversion
     width: int = 800,               # output width
     height: int = 600,              # output height
-    frame_rate: float = 30.00,      # fps (default : 30fps)                        
+    frame_rate: int = 30,      # fps (default : 30fps)                        
     pixel_format: str = "",         # yuv420p, rgb24, etc.
     video_filter: str = "",         # e.g., "crop=640:360"
     rotate: int = 0,                # rotation in degrees
@@ -108,15 +108,25 @@ def smpMediaProcessor(
     if not compatcheck.checkMediaCompatibility(ext, codec_audio, codec_video, samplerate, sample_fmt, bitrate):
         return
     
-    simplempcore.smpcore(inputfilename, outputfilename, codec_audio, codec_video, bitrate, samplerate, sample_fmt)
+    simplempcore.smpcore(inputfilename, outputfilename, 
+                         codec_audio, codec_video, 
+                         bitrate, 
+                         samplerate, sample_fmt, 
+                         frame_rate, 
+                         channels, 
+                         width, height)
 
 
 
 smpMediaProcessor("../dump/v2v/testvdo.mp4", 
                   "../dump/v2v/some.mp4",
                   codec_audio="mp3", 
-                  codec_video="hevc",
+                  channels=2,
                   bitrate=44100, 
                   samplerate=32000,
                   sample_fmt="",
+                  codec_video="hevc",
+                  frame_rate=60,
+                  width=800,
+                  height=600,
                   debug=False)

@@ -26,7 +26,7 @@ codec_dict = {
     ".flac" : ["flac"],
     ".m4a"  : ["aac", "aac (fdk)", "alac"],
     ".mp3"  : ["mp3"],
-    ".mp4"  : ["aac", "aac (fdk)"],
+    # ".mp4"  : ["aac", "aac (fdk)"],
     ".oga"  : ["vorbis", "opus", "flac", "speex"],
     ".ogg"  : ["vorbis", "opus", "flac", "speex"],
     ".opus" : ["opus"],
