@@ -19,13 +19,13 @@ def smpMediaProcessor(
     # General (all media types)
     inputfilename: str = "",
     outputfilename: str = "",
-    codec: str = "",                # codec to use for conversion
     overwrite: bool = False,        # whether to overwrite existing files
     debug: bool = False,            # print debug info
     threads: int = 0,               # ffmpeg threads, 0 = auto
 
     # --------------------
     # Audio only
+    codec_audio: str = "",          # audio codec to use for conversion
     samplerate: int = 44100,        # sample rate in Hz (defasult : 44.1khz)
     sample_fmt: str = "",           # e.g., pcm_s16le, pcm_f32le
     channels: int = 2,              # number of audio channels  (default : stereo)
@@ -38,6 +38,7 @@ def smpMediaProcessor(
 
     # --------------------
     # Video only
+    codec_video: str = "",          # video codec to use for conversion
     width: int = 800,               # output width
     height: int = 600,              # output height
     frame_rate: float = 30.00,      # fps (default : 30fps)                        
@@ -104,17 +105,18 @@ def smpMediaProcessor(
 
     # ==== check file extenstion and codec compatibility with settings
     ext = os.path.splitext(outputfilename)[1].lower()
-    if not compatcheck.checkMediaCompatibility(ext, codec, samplerate, sample_fmt, bitrate):
+    if not compatcheck.checkMediaCompatibility(ext, codec_audio, codec_video, samplerate, sample_fmt, bitrate):
         return
     
-    simplempcore.smpcore(inputfilename, outputfilename, codec, bitrate, samplerate, sample_fmt)
+    simplempcore.smpcore(inputfilename, outputfilename, codec_audio, codec_video, bitrate, samplerate, sample_fmt)
 
 
 
-smpMediaProcessor("../dump/testaudio.flac", 
-                  "../dump/some.mp3",
-                  codec="mp3", 
-                  bitrate=68000, 
-                  samplerate=48000, 
+smpMediaProcessor("../dump/v2v/testvdo.mp4", 
+                  "../dump/v2v/some.mp4",
+                  codec_audio="mp3", 
+                  codec_video="hevc",
+                  bitrate=44100, 
+                  samplerate=32000,
                   sample_fmt="",
                   debug=False)

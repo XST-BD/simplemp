@@ -5,6 +5,9 @@ import av.datasets
 from av.audio.stream import AudioStream
 from av.audio.resampler import AudioResampler
 
+from av.video.stream import VideoStream
+from av.video.reformatter import VideoReformatter
+
 from typing import cast
 
 # input = av.open(av.datasets.curated("/home/pancake/Music/palpal.mp3"))
@@ -37,7 +40,8 @@ from typing import cast
 def smpcore(
         inputfilename : str,
         outputfilename : str,
-        codecname : str,
+        audio_codecname : str,
+        video_codecname : str,
         bitrate : int, 
         sample_rate : int, 
         sample_fmt : str
@@ -46,32 +50,47 @@ def smpcore(
     input = av.open(inputfilename)
     output = av.open(outputfilename, mode="w")
 
-    istreams = input.streams.audio[0] 
+    istreamsa = input.streams.audio[0] 
+    istreamsv = input.streams.video[0]
 
-    ostream = cast(AudioStream, output.add_stream(codec_name=codecname, rate=sample_rate))
-    ostream.bit_rate = bitrate
-    ostream.layout = "mono"
+    ostreama = cast(AudioStream, output.add_stream(codec_name=audio_codecname, rate=sample_rate))
+    ostreamv = cast(VideoStream, output.add_stream(codec_name=video_codecname, rate=sample_rate))
 
-    if sample_rate is not None and sample_rate != "": 
-        ostream.sample_rate = sample_rate
-
-   # Create a resampler to convert input to something the encoder accepts
+    # Create a resampler to convert input audio to something the encoder accepts
+    ostreama.bit_rate = bitrate
     resampler = AudioResampler(
         format="fltp",         # safe default for AAC
         layout="mono",         # match ostream.layout
-        rate=ostream.rate      # match ostream rate
+        rate=sample_rate
     )
 
-    for frames in input.decode(istreams):
+    # Create a reformater to convert input video to something the encoder accepts
+    reformater = VideoReformatter()
+
+    # Audio encoder
+    for frames in input.decode(istreamsa):
         # TODO: Apply filters here
         frames = resampler.resample(frames) 
 
         for frame in frames:
-            for packet in ostream.encode(frame):
+            for packet in ostreama.encode(frame):
                 output.mux(packet)
 
-    # flush encoder
-    for packet in ostream.encode(None):
+    # flush Audio encoder
+    for packet in ostreama.encode(None):
+        output.mux(packet) 
+
+
+    # Video encoder 
+    for frames in input.decode(istreamsv): 
+        # TODO: Apply filters here
+        
+        rescaled_frames = frames.reformat(width=640, height=360, format='yuv420p')
+        for packet in ostreamv.encode(rescaled_frames):
+            output.mux(packet)
+
+    # flush Video encoder
+    for packet in ostreamv.encode(None): 
         output.mux(packet)
 
     input.close()

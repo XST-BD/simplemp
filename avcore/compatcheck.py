@@ -9,7 +9,7 @@ codec_dict = {
     ".3gp"  : ["aac", "aac (fdk)"],
     ".aac"  : ["aac", "aac (fdk)"],
     ".adts" : ["aac", "aac (fdk)"],
-    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
+    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s32le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
     # aifc also supports alac coded but needs AIFF-C muxer. Which is unavailable in pyav
     ".aifc" : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
@@ -30,10 +30,10 @@ codec_dict = {
     ".oga"  : ["vorbis", "opus", "flac", "speex"],
     ".ogg"  : ["vorbis", "opus", "flac", "speex"],
     ".opus" : ["opus"],
-    ".wav"  : ["alaw", "mulaw", 
-               "s16", "s24", "s32", "flt", "dbl", 
-               "s16p", "s24p", "s32p", "fltp", "dblp", 
-               "u8"], 
+    ".wav"  : ["pcm_alaw", "pcm_mulaw", 
+               "pcm_s8", 
+               "pcm_s16le", "pcm_s24le", "pcm_s32le",
+               "pcm_s16be", "pcm_s24be", "pcm_s32be"], 
 
     # wma format also supports wmapro and wmalossless codec. But not available by default for being proprietary
     ".wma"  : ["wmav1", "wmav2"],
@@ -95,7 +95,7 @@ bitrate_range_dict = {
     "amr_nb": [4750, 12200],       # AMR Narrowband
     "amr_wb": [6600, 23850],       # AMR Wideband
     "mp3": [64000, 320000],
-    "opus": [6000, 510000],        # 6 kbps → 510 kbps
+    "opus": [500, 256000],          # 0.5 kbps → 256 kbps
     "vorbis": [16000, 500000],     # Ogg Vorbis
     "speex": [2000, 44100],        # Narrowband / wideband
 
@@ -109,8 +109,8 @@ bitrate_range_dict = {
     # Lossless / PCM codecs → bitrate irrelevant
     "alac": None,
     "flac": None,
-    "alaw": None,
-    "mulaw": None,
+    "pcm_alaw": None,
+    "pcm_mulaw": None,
     "s16": None,
     "s24": None,
     "s32": None,
@@ -138,7 +138,7 @@ samplerate_range_dict = {
 
     # Ogg codecs
     "vorbis": [32000, 48000],
-    "speex": [8000, 48000],
+    "speex": [8000, 32000],
 
     # AMR
     "amr_nb": [8000, 8000],      # fixed 8kHz
@@ -153,8 +153,8 @@ samplerate_range_dict = {
     # Lossless / PCM
     "alac": [8000, 192000],
     "flac": [8000, 192000],
-    "alaw": [8000, 192000],
-    "mulaw": [8000, 192000],
+    "pcm_alaw": [8000, 192000],
+    "pcm_mulaw": [8000, 192000],
     "pcm_s8": [8000, 192000],
     "pcm_s16le": [8000, 192000],
     "pcm_s24le": [8000, 192000],
@@ -181,8 +181,8 @@ audio_sample_fmt_dict = {
     "fltp": ["fltp"],
     "dbl": ["dbl"],
     "dblp": ["dblp"],
-    "alaw": ["alaw"],
-    "mulaw": ["mulaw"],
+    "pcm_alaw": ["pcm_alaw"],
+    "pcm_mulaw": ["pcm_mulaw"],
 
     # Lossless compressed
     "flac": ["u8", "s16", "s16p", "s32", "s32p", "flt", "fltp", "dbl", "dblp"],
@@ -359,8 +359,9 @@ def checkVideoSamplefmtCompatibility(codecname, sample_fmt) -> bool:
     
     return True 
 
-def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate : int) -> bool: 
 
+
+def checkMediaCompatibility(ext, audio_codecname, video_codecname, samplerate, samplefmt, bitrate : int) -> bool: 
 
     mediatype = -1
 
@@ -369,18 +370,22 @@ def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate : int
     if ext in media_type_ext_dict["subtitle"]: mediatype = 2
     if ext in media_type_ext_dict["video"]: mediatype = 3
 
-    if not checkCodecCompatibility(ext, codecname): 
+    if not checkCodecCompatibility(ext, video_codecname): 
         return False
     
     match mediatype: 
         # Audio
         case 0:
-            if not checkBitrateCompatibility(codecname, bitrate): return False
-            if not checkSamplerateCompatibility(codecname, samplerate): return False
-            if not checkAudioSamplefmtCompatibility(codecname, samplefmt): return False
+            if not checkBitrateCompatibility(audio_codecname, bitrate): return False
+            if not checkSamplerateCompatibility(audio_codecname, samplerate): return False
+            if not checkAudioSamplefmtCompatibility(audio_codecname, samplefmt): return False
         # Video
         case 3: 
-            if not checkBitrateCompatibility(codecname, bitrate): return False
-            if not checkVideoSamplefmtCompatibility(codecname, samplefmt): return False
+            if not checkBitrateCompatibility(video_codecname, bitrate): return False
+            # if not checkVideoSamplefmtCompatibility(codecname, samplefmt): return False
 
     return True
+
+
+def checkAudioVideoCompat():
+    pass
