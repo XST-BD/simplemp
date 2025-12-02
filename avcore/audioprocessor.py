@@ -9,8 +9,8 @@ import av
 import av.container
 import av.datasets
 
-import compatcheck
-import debuglog
+from . import compatcheck
+from . import debuglog
 
 import simplempcore
 

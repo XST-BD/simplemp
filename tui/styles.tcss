@@ -1,5 +1,6 @@
 VerticalScroll {
     min-height: 100vh;
+    scrollbar-size: 1 1;
 }
 
 Container {
