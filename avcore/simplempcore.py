@@ -97,6 +97,7 @@ def smpcore(
         channels : int,
         width : int, 
         height : int,
+        pixel_fmt : str,
 ):
     
     incontainer = av.open(inputfilename)
@@ -141,7 +142,7 @@ def smpcore(
             ))
             ostreamv.bit_rate = bitrate_vdo 
             ostreamv.options = {"crf":"24", "preset":"medium"}
-            ostreamv.pix_fmt="yuv420p"
+            ostreamv.pix_fmt=pixel_fmt
             ostreamv.height=height
             ostreamv.width=width
             ostreamv.time_base = Fraction(1, frame_rate)

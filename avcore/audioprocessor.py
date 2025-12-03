@@ -22,44 +22,32 @@ def smpMediaProcessor(
     overwrite: bool = False,        # whether to overwrite existing files
     debug: bool = False,            # print debug info
     threads: int = 0,               # ffmpeg threads, 0 = auto
+    mute: bool = False,             # remove audio track
+    loop: int = 0,                  # loop input N times
 
     # --------------------
     # Audio only
     codec_audio: str = "",          # audio codec to use for conversion
     samplerate: int = 44100,        # sample rate in Hz (defasult : 44.1khz)
     sample_fmt: str = "",           # e.g., pcm_s16le, pcm_f32le
+    bitrate: int = 192000,          # audio bitrate for compressed formats (defasult : 192kbps)
     channels: int = 2,              # number of audio channels  (default : stereo)
     volume: int = 1,                # volume adjustment (linear)
-    audio_filter: str = "",         # e.g., "highpass=f=300"
-    normalize: bool = False,        # normalize audio
-    start_time: float = 0.0,        # start time (seek)
-    duration: float = 0.0,          # duration to process
-    bitrate: int = 192000,          # audio bitrate for compressed formats (defasult : 192kbps)
 
     # --------------------
     # Video only
     codec_video: str = "",          # video codec to use for conversion
+    pixel_fmt: str = "",            # yuv420p, rgb24, etc.
+    bitrate_video: int = 192000,    # video bitrate
+    preset: str = "",               # encoder preset (fast, slow, etc.)
     width: int = 800,               # output width
     height: int = 600,              # output height
-    frame_rate: int = 30,      # fps (default : 30fps)                        
-    pixel_format: str = "",         # yuv420p, rgb24, etc.
-    video_filter: str = "",         # e.g., "crop=640:360"
-    rotate: int = 0,                # rotation in degrees
-    bitrate_video: int = 192000,    # video bitrate
-    gop_size: int = 0,              # keyframe interval
-    preset: str = "",               # encoder preset (fast, slow, etc.)
+    frame_rate: int = 30,           # fps (default : 30fps)                        
     crf: int = 0,                   # constant rate factor for quality-based encoding
 
     # --------------------
-    # Audio & Video
-    map_streams: str = "",          # e.g., "0:a,0:v" for specific streams
-    mute: bool = False,             # remove audio track
-    loop: int = 0,                  # loop input N times
-    start_time_global: float = 0.0, # global start time for trimming
-    duration_global: float = 0.0,   # global duration for trimming
-
-    # --------------------
     # Image only
+    codec_image: str = "",          # image codec to use for conversion
     format_out: str = "",           # e.g., png, jpg, bmp
     compression_level: int = 6,     # for PNG, WebP, etc.
     quality: int = 85,              # JPEG / WebP quality 0-100
@@ -72,7 +60,7 @@ def smpMediaProcessor(
 
     # --------------------
     # Subtitle only
-    subtitle_codec: str = "",           # e.g., srt, ass, mov_text
+    codec_subtitle: str = "",           # e.g., srt, ass, mov_text
     subtitle_encoding: str = "utf-8",   # character encoding
     subtitle_filter: str = "",          # e.g., "scale=1.5:1.5"
     embed_subtitles: bool = False,      # burn-in subtitles
@@ -108,7 +96,7 @@ def smpMediaProcessor(
     if not compatcheck.checkMediaCompatibility(
         ext, 
         codec_audio, codec_video, 
-        samplerate, sample_fmt, 
+        samplerate, sample_fmt, pixel_fmt,
         bitrate, bitrate_video
     ):
         return
@@ -117,23 +105,27 @@ def smpMediaProcessor(
                          codec_audio, codec_video, 
                          bitrate, 
                          bitrate_video,
-                         samplerate, sample_fmt, 
+                         samplerate, sample_fmt,
                          frame_rate, 
                          channels, 
-                         width, height)
+                         width, height,
+                         pixel_fmt=pixel_fmt)
 
 
 
-smpMediaProcessor("../dump/v2v/testvdo.mp4", 
-                  "../dump/v2v/some.mkv",
-                  codec_audio="aac", 
-                  channels=2,
-                  bitrate=44100, 
-                  samplerate=32000,
-                  sample_fmt="",
-                  codec_video="vp8",
-                  bitrate_video=1000000,
-                  frame_rate=60,
-                  width=1080,
-                  height=720,
-                  debug=False)
+smpMediaProcessor(
+            "../dump/v2vpxfmt/testvideo.mp4", 
+            "../dump/v2vpxfmt/some0.mov",
+            codec_audio="aac", 
+            channels=2,
+            bitrate=44100, 
+            samplerate=32000,
+            sample_fmt="",
+            codec_video="prores",
+            bitrate_video=6000000,
+            frame_rate=120,
+            width=1280,
+            height=720,
+            pixel_fmt="yuv444p10le",
+            debug=False,
+        )
