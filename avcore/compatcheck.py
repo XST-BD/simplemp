@@ -1,6 +1,33 @@
 import code
 from random import sample
 
+# ======= Unacceptable file extensions ========
+# Name: .8svx
+# Reason: FFmpeg doesn't support encoding for it.
+# Name: .aa
+# Reason: FFmpeg doesn't support encoding for it. Also has risk of DRM clashes
+#
+# Name: .amr , .awb 
+# Reason: Requires amr_wb and amr_nb codec. Which requires seperate lib integration
+#
+# Name: .caf
+# Reason: Not reliable outside mac
+#
+# Name: .mp4 (audio)
+# Reason: Well known for vidoe. So audio support excluded to prevent confusion and clashes
+#
+# Name: .aax
+# Reason: Same case as .aa
+#
+# Name: .amr , .awb 
+# Reason: Requires amr_wb and amr_nb codec. Which requires seperate lib integration
+#
+# Name: .caf
+# Reason: Not reliable outside mac
+#
+# Name: .mp4 (audio)
+# Reason: Well known for vidoe. So audio support excluded to prevent confusion and clashes
+
 # don't remove . from keys. It's for explicitly describing extension name
 codec_dict = {
 
@@ -16,17 +43,9 @@ codec_dict = {
 
     ".aiff" : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
-    # these 2 needs separate libs installed
-    # ".amr"  : ["amr_nb", "amr_wb"],
-    # ".awb"  : ["amr_wb"],
-
-    # caf file don't work well outside mac
-    # ".caf"  : ["alac"], 
-
     ".flac" : ["flac"],
     ".m4a"  : ["aac", "alac"],
     ".mp3"  : ["mp3"],
-    # ".mp4"  : ["aac", "aac (fdk)"],
     ".oga"  : ["vorbis", "opus", "flac", "speex"],
     ".ogg"  : ["vorbis", "opus", "flac", "speex"],
     ".opus" : ["opus"],
@@ -242,6 +261,16 @@ frame_rate_dict = {
     "wmv2" : [24, 30],
 }
 
+preset_list = {"veryslow", "slower", "slow", "medium", "fast", "faster", "veryfast", "superfast", "ultrafast"}
+profile_list = {"baseline", "high", "main"}
+tune_list = {"animation", "fastdecode", "film", "grain", "stillimage", "zerolatency"}
+
+# list of video codecs that support crf, preset, profile and tune
+codec_cppt_support_list = {"h264", "libx264", "libopenh264", "h265", "libx265", "hevc"}
+# list of video codecs that support crf, preset and profile but not tune
+codec_cpp_support_list = {"av1", "vp9"}
+
+
 media_type_ext_dict = {
     "audio": [
         ".3gp", ".aac", ".adts", ".aif", ".aifc", ".aiff", ".alac", ".amr", ".awb", 
@@ -397,6 +426,39 @@ def checkMediaCompatibility(ext,
         case 3: 
             if not checkBitrateCompatibility(video_codecname, bitrate): return False
             if not checkVideoSamplefmtCompatibility(video_codecname, pixel_fmt): return False
+
+    return True
+
+
+# check video codec's compatibility with crf, preset, profile and tune
+def checkCPPTcompat(codecname : str, crf : int, profile : str, preset : str, tune : str) ->  bool:
+
+    if codecname not in codec_cppt_support_list and codecname not in codec_cpp_support_list: 
+        print(f"SimpleMP: Codec: {codecname} doesn't support crf, preset, profile and tune")
+        return False
+    
+    if crf not in range(0, 51):
+        print(f"SimpleMP: crf outside practical range [0, 51]")
+        return False 
+    
+    if profile not in profile_list: 
+        print(f"SimpleMP: Profile: {profile} is unavailable to use or unavailable or non-exitentn\n"
+              f"Available: {profile_list}")
+        return False
+    
+    if preset not in preset_list: 
+        print(f"SimpleMP: Preset: {preset} is unavailable to use or unavailable or non-exitent\n"
+              f"Available: {preset_list}")
+        return False
+
+    if tune not in tune_list: 
+        print(f"SimpleMP: Profile: {profile} is unavailable to use or unavailable or non-exitent\n"
+              f"Available : {tune_list}")
+        return False
+    
+    if tune in tune_list and codecname in codec_cpp_support_list:
+        print(f"SimpleMP: Codec: {codecname} doesn't support tune")
+        return False
 
     return True
 

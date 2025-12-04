@@ -87,17 +87,25 @@ def processMedia(
 def smpcore(
         inputfilename : str,
         outputfilename : str,
+
+        # Audio
         audio_codecname : str,
-        video_codecname : str,
         bitrate : int, 
-        bitrate_vdo : int,
         sample_rate : int, 
         sample_fmt : str,
-        frame_rate: int,
         channels : int,
+
+        # Video
+        video_codecname : str,
+        bitrate_vdo : int,
+        frame_rate: int,
         width : int, 
         height : int,
         pixel_fmt : str,
+        preset : str, 
+        tune : str, 
+        profile : str, 
+        crf : int, 
 ):
     
     incontainer = av.open(inputfilename)
@@ -141,7 +149,7 @@ def smpcore(
                 rate=frame_rate,
             ))
             ostreamv.bit_rate = bitrate_vdo 
-            ostreamv.options = {"crf":"24", "preset":"medium"}
+            ostreamv.options = {"crf":str(crf), "preset":preset, "profile":profile, "tune":tune}
             ostreamv.pix_fmt=pixel_fmt
             ostreamv.height=height
             ostreamv.width=width

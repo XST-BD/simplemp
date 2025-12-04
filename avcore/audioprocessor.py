@@ -44,6 +44,8 @@ def smpMediaProcessor(
     height: int = 600,              # output height
     frame_rate: int = 30,           # fps (default : 30fps)                        
     crf: int = 0,                   # constant rate factor for quality-based encoding
+    tune : str = "",
+    profile : str = "", 
 
     # --------------------
     # Image only
@@ -62,7 +64,6 @@ def smpMediaProcessor(
     # Subtitle only
     codec_subtitle: str = "",           # e.g., srt, ass, mov_text
     subtitle_encoding: str = "utf-8",   # character encoding
-    subtitle_filter: str = "",          # e.g., "scale=1.5:1.5"
     embed_subtitles: bool = False,      # burn-in subtitles
     extract_subtitles: bool = False,    # extract subtitle stream only
 ):
@@ -101,31 +102,30 @@ def smpMediaProcessor(
     ):
         return
     
-    simplempcore.smpcore(inputfilename, outputfilename, 
-                         codec_audio, codec_video, 
-                         bitrate, 
-                         bitrate_video,
-                         samplerate, sample_fmt,
-                         frame_rate, 
-                         channels, 
-                         width, height,
-                         pixel_fmt=pixel_fmt)
+    simplempcore.smpcore(
+                inputfilename, outputfilename,
+
+                # Audio
+                audio_codecname=codec_audio, bitrate=bitrate, sample_fmt=sample_fmt, sample_rate=samplerate, channels=channels, 
+
+                # Video
+                video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
+                width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,         
+            )
 
 
 
 smpMediaProcessor(
-            "../dump/v2vpxfmt/testvideo.mp4", 
-            "../dump/v2vpxfmt/some0.mov",
-            codec_audio="aac", 
-            channels=2,
-            bitrate=44100, 
-            samplerate=32000,
-            sample_fmt="",
-            codec_video="prores",
-            bitrate_video=6000000,
-            frame_rate=120,
-            width=1280,
-            height=720,
-            pixel_fmt="yuv444p10le",
-            debug=False,
+            inputfilename="../dump/v2vpxfmt/testvideo.mp4", 
+            outputfilename="../dump/v2vpxfmt/some1.flv",
+
+            # Audio
+            codec_audio="aac", bitrate=44100, sample_fmt="", samplerate=32000, channels=2, volume=50,
+
+            # Video
+            codec_video="h264", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=24, width=1280, height=720,
+            crf=24, tune="zerolatency", profile="high", preset="fast",
+            
+            # General
+            threads=4, mute=False, loop=1, debug=False,
         )
