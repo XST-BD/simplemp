@@ -48,19 +48,6 @@ def smpMediaProcessor(
     profile : str = "", 
 
     # --------------------
-    # Image only
-    codec_image: str = "",          # image codec to use for conversion
-    format_out: str = "",           # e.g., png, jpg, bmp
-    compression_level: int = 6,     # for PNG, WebP, etc.
-    quality: int = 85,              # JPEG / WebP quality 0-100
-    resize: Optional[Tuple[int,int]] = None,         
-                                    # (width, height)
-    rotate_image: int = 0,          # image rotation
-    flip: str = "",                 # horizontal / vertical / both
-    color_space: str = "",          # e.g., rgb24, gray
-    dithering: bool = False,        # for palette reduction
-
-    # --------------------
     # Subtitle only
     codec_subtitle: str = "",           # e.g., srt, ass, mov_text
     subtitle_encoding: str = "utf-8",   # character encoding
@@ -112,7 +99,6 @@ def smpMediaProcessor(
                 video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
                 width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,         
             )
-
 
 
 smpMediaProcessor(
