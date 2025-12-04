@@ -6,58 +6,329 @@ This document summarizes the compatibility and feature testing performed on the 
 ❌ Fail  
 ⚠️ Partial  
 — Not tested
-## Image Codecs
-| Codec | Sample Format | Color space | Status |
-|-------|---------------|-------------|--------|
-| bmp   | bgr24         | rgb         |        |
-| bmp   | bgra          | rgb         |        |
-| bmp   | rgb565le      | rgb         |        |
-| bmp   | rgb555le      | rgb         |        |
-| bmp   | pal8          | rgb         |        |
-| bmp   | gray          | rgb         |        |
-| gif   | pal8          | rgb         |        |
-| ico   | bgr24         | rgb         |        |
-| ico   | bgra          | rgb         |        |
-| ico   | pal8          | rgb         |        |
-| mjpeg | yuvj420p      | smpte170m   |        |
-| mjpeg | yuvj422p      | smpte170m   |        |
-| mjpeg | yuvj444p      | smpte170m   |        |
-| mjpeg | yuvj420p      | rgb         |        |
-| mjpeg | yuvj422p      | rgb         |        |
-| mjpeg | yuvj444p      | rgb         |        |
-| png   | rgb24         | rgb         |        |
-| png   | rgba          | rgb         |        |
-| png   | gray          | rgb         |        |
-| png   | gray16        | rgb         |        |
-| png   | rgb48be       | rgb         |        |
-| png   | pal8          | rgb         |        | 
-| pbm   | monob         | rgb         |        | 
-| pgm   | gray16        | rgb         |        | 
-| pgm   | gray16        | rgb         |        | 
-| pnm   | monob         | rgb         |        | 
-| pnm   | gray          | rgb         |        | 
-| pnm   | gray16        | rgb         |        | 
-| pnm   | rgb48be       | rgb         |        | 
-| pnm   | rgb24         | rgb         |        | 
-| ppm   | rgb24         | rgb         |        | 
-| ppm   | rgb48be       | rgb         |        | 
-| tiff  | rgb24         | rgb         |        |
-| tiff  | rgba          | rgb         |        |
-| tiff  | gray          | rgb         |        |
-| tiff  | gray16        | rgb         |        |
-| tiff  | rgb48be       | rgb         |        |
-| tiff  | rgba64be      | rgb         |        |
-| tiff  | pal8          | rgb         |        |
-| tiff  | yuv420p       | smpte170m   |        |
-| tiff  | yuv422p       | smpte170m   |        |
-| tiff  | yuv444p       | smpte170m   |        |
-| tiff  | yuv420p       | bt709       |        |
-| tiff  | yuv422p       | bt709       |        |
-| tiff  | yuv444p       | bt709       |        |
-| webp  | yuv420p       | smpte170m   |        |
-| webp  | yuva420p      | smpte170m   |        | 
-| webp  | yuv444p       | smpte170m   |        |
-| webp  | yuva444p      | smpte170m   |        | 
-
-
-
+## Audio Tests
+| Extension  | Codec     | Sample Format | Channel(s)| Status |
+|------------|-----------|---------------|-----------|--------|
+| .3gp       | aac       | fltp          | 1         |        |
+| .3gp       | aac       | fltp          | 2         |        |
+| .3gp       | aac       | fltp          | 6         |        |
+| .3gp       | aac       | fltp          | 8         |        |
+| .aac       | aac       | fltp          | 1         |        |
+| .aac       | aac       | fltp          | 2         |        |
+| .aac       | aac       | fltp          | 6         |        |
+| .aac       | aac       | fltp          | 8         |        |
+| .adts      | aac       | fltp          | 1         |        |
+| .adts      | aac       | fltp          | 2         |        |
+| .adts      | aac       | fltp          | 6         |        |
+| .adts      | aac       | fltp          | 8         |        |
+| .aif       | pcm_s8    | s8            | 1         |        |
+| .aif       | pcm_s8    | s8            | 2         |        |
+| .aif       | pcm_s8    | s8            | 6         |        |
+| .aif       | pcm_s8    | s8            | 8         |        |
+| .aif       | pcm_s16le | s16           | 1         |        |
+| .aif       | pcm_s16le | s16           | 2         |        |
+| .aif       | pcm_s16le | s16           | 6         |        |
+| .aif       | pcm_s16le | s16           | 8         |        |
+| .aif       | pcm_s16le | s16p          | 1         |        |
+| .aif       | pcm_s16le | s16p          | 2         |        |
+| .aif       | pcm_s16le | s16p          | 6         |        |
+| .aif       | pcm_s16le | s16p          | 8         |        |
+| .aif       | pcm_s16be | s16           | 1         |        |
+| .aif       | pcm_s16be | s16           | 2         |        |
+| .aif       | pcm_s16be | s16           | 6         |        |
+| .aif       | pcm_s16be | s16           | 8         |        |
+| .aif       | pcm_s16be | s16p          | 1         |        |
+| .aif       | pcm_s16be | s16p          | 2         |        |
+| .aif       | pcm_s16be | s16p          | 6         |        |
+| .aif       | pcm_s16be | s16p          | 8         |        |
+| .aif       | pcm_s24be | s32           | 1         |        |
+| .aif       | pcm_s24be | s32           | 2         |        |
+| .aif       | pcm_s24be | s32           | 6         |        |
+| .aif       | pcm_s24be | s32           | 8         |        |
+| .aif       | pcm_s24be | s32p          | 1         |        |
+| .aif       | pcm_s24be | s32p          | 2         |        |
+| .aif       | pcm_s24be | s32p          | 6         |        |
+| .aif       | pcm_s24be | s32p          | 8         |        |
+| .aif       | pcm_s32le | s32           | 1         |        |
+| .aif       | pcm_s32le | s32           | 2         |        |
+| .aif       | pcm_s32le | s32           | 6         |        |
+| .aif       | pcm_s32le | s32           | 8         |        |
+| .aif       | pcm_s32le | s32p          | 1         |        |
+| .aif       | pcm_s32le | s32p          | 2         |        |
+| .aif       | pcm_s32le | s32p          | 6         |        |
+| .aif       | pcm_s32le | s32p          | 8         |        |
+| .aif       | pcm_s32be | s32           | 1         |        |
+| .aif       | pcm_s32be | s32           | 2         |        |
+| .aif       | pcm_s32be | s32           | 6         |        |
+| .aif       | pcm_s32be | s32           | 8         |        |
+| .aif       | pcm_s32be | s32p          | 1         |        |
+| .aif       | pcm_s32be | s32p          | 2         |        |
+| .aif       | pcm_s32be | s32p          | 6         |        |
+| .aif       | pcm_s32be | s32p          | 8         |        |
+| .aifc      | pcm_s8    | s8            | 1         |        |
+| .aifc      | pcm_s8    | s8            | 2         |        |
+| .aifc      | pcm_s8    | s8            | 6         |        |
+| .aifc      | pcm_s8    | s8            | 8         |        |
+| .aifc      | pcm_s16le | s16           | 1         |        |
+| .aifc      | pcm_s16le | s16           | 2         |        |
+| .aifc      | pcm_s16le | s16           | 6         |        |
+| .aifc      | pcm_s16le | s16           | 8         |        |
+| .aifc      | pcm_s16le | s16p          | 1         |        |
+| .aifc      | pcm_s16le | s16p          | 2         |        |
+| .aifc      | pcm_s16le | s16p          | 6         |        |
+| .aifc      | pcm_s16le | s16p          | 8         |        |
+| .aifc      | pcm_s16be | s16           | 1         |        |
+| .aifc      | pcm_s16be | s16           | 2         |        |
+| .aifc      | pcm_s16be | s16           | 6         |        |
+| .aifc      | pcm_s16be | s16           | 8         |        |
+| .aifc      | pcm_s16be | s16p          | 1         |        |
+| .aifc      | pcm_s16be | s16p          | 2         |        |
+| .aifc      | pcm_s16be | s16p          | 6         |        |
+| .aifc      | pcm_s16be | s16p          | 8         |        |
+| .aifc      | pcm_s24be | s32           | 1         |        |
+| .aifc      | pcm_s24be | s32           | 2         |        |
+| .aifc      | pcm_s24be | s32           | 6         |        |
+| .aifc      | pcm_s24be | s32           | 8         |        |
+| .aifc      | pcm_s24be | s32p          | 1         |        |
+| .aifc      | pcm_s24be | s32p          | 2         |        |
+| .aifc      | pcm_s24be | s32p          | 6         |        |
+| .aifc      | pcm_s24be | s32p          | 8         |        |
+| .aifc      | pcm_s32be | s32           | 1         |        |
+| .aifc      | pcm_s32be | s32           | 2         |        |
+| .aifc      | pcm_s32be | s32           | 6         |        |
+| .aifc      | pcm_s32be | s32           | 8         |        |
+| .aifc      | pcm_s32be | s32p          | 1         |        |
+| .aifc      | pcm_s32be | s32p          | 2         |        |
+| .aifc      | pcm_s32be | s32p          | 6         |        |
+| .aifc      | pcm_s32be | s32p          | 8         |        |
+| .aiff      | pcm_s8    | s8            | 1         |        |
+| .aiff      | pcm_s8    | s8            | 2         |        |
+| .aiff      | pcm_s8    | s8            | 6         |        |
+| .aiff      | pcm_s8    | s8            | 8         |        |
+| .aiff      | pcm_s16le | s16           | 1         |        |
+| .aiff      | pcm_s16le | s16           | 2         |        |
+| .aiff      | pcm_s16le | s16           | 6         |        |
+| .aiff      | pcm_s16le | s16           | 8         |        |
+| .aiff      | pcm_s16le | s16p          | 1         |        |
+| .aiff      | pcm_s16le | s16p          | 2         |        |
+| .aiff      | pcm_s16le | s16p          | 6         |        |
+| .aiff      | pcm_s16le | s16p          | 8         |        |
+| .aiff      | pcm_s16be | s16           | 1         |        |
+| .aiff      | pcm_s16be | s16           | 2         |        |
+| .aiff      | pcm_s16be | s16           | 6         |        |
+| .aiff      | pcm_s16be | s16           | 8         |        |
+| .aiff      | pcm_s16be | s16p          | 1         |        |
+| .aiff      | pcm_s16be | s16p          | 2         |        |
+| .aiff      | pcm_s16be | s16p          | 6         |        |
+| .aiff      | pcm_s16be | s16p          | 8         |        |
+| .aiff      | pcm_s24be | s32           | 1         |        |
+| .aiff      | pcm_s24be | s32           | 2         |        |
+| .aiff      | pcm_s24be | s32           | 6         |        |
+| .aiff      | pcm_s24be | s32           | 8         |        |
+| .aiff      | pcm_s24be | s32p          | 1         |        |
+| .aiff      | pcm_s24be | s32p          | 2         |        |
+| .aiff      | pcm_s24be | s32p          | 6         |        |
+| .aiff      | pcm_s24be | s32p          | 8         |        |
+| .aiff      | pcm_s32be | s32           | 1         |        |
+| .aiff      | pcm_s32be | s32           | 2         |        |
+| .aiff      | pcm_s32be | s32           | 6         |        |
+| .aiff      | pcm_s32be | s32           | 8         |        |
+| .aiff      | pcm_s32be | s32p          | 1         |        |
+| .aiff      | pcm_s32be | s32p          | 2         |        |
+| .aiff      | pcm_s32be | s32p          | 6         |        |
+| .aiff      | pcm_s32be | s32p          | 8         |        |
+| .flac      | flac      | s16           | 1         |        |
+| .flac      | flac      | s16           | 2         |        |
+| .flac      | flac      | s16           | 6         |        |
+| .flac      | flac      | s16           | 8         |        |
+| .flac      | flac      | s16p          | 1         |        |
+| .flac      | flac      | s16p          | 2         |        |
+| .flac      | flac      | s16p          | 6         |        |
+| .flac      | flac      | s16p          | 8         |        |
+| .flac      | flac      | s32           | 1         |        |
+| .flac      | flac      | s32           | 2         |        |
+| .flac      | flac      | s32           | 6         |        |
+| .flac      | flac      | s32           | 8         |        |
+| .flac      | flac      | s32p          | 1         |        |
+| .flac      | flac      | s32p          | 2         |        |
+| .flac      | flac      | s32p          | 6         |        |
+| .flac      | flac      | s32p          | 8         |        |
+| .flac      | flac      | flt           | 1         |        |
+| .flac      | flac      | flt           | 2         |        |
+| .flac      | flac      | flt           | 6         |        |
+| .flac      | flac      | flt           | 8         |        |
+| .flac      | flac      | fltp          | 1         |        |
+| .flac      | flac      | fltp          | 2         |        |
+| .flac      | flac      | fltp          | 6         |        |
+| .flac      | flac      | fltp          | 8         |        |
+| .m4a       | aac       | fltp          | 1         |        | 
+| .m4a       | aac       | fltp          | 2         |        | 
+| .m4a       | aac       | fltp          | 6         |        | 
+| .m4a       | aac       | fltp          | 8         |        | 
+| .m4a       | alac      | s16           | 1         |        |
+| .m4a       | alac      | s16           | 2         |        |
+| .m4a       | alac      | s16           | 6         |        |
+| .m4a       | alac      | s16           | 8         |        |
+| .m4a       | alac      | s16p          | 1         |        |
+| .m4a       | alac      | s16p          | 2         |        |
+| .m4a       | alac      | s16p          | 6         |        |
+| .m4a       | alac      | s16p          | 8         |        |
+| .m4a       | alac      | s32           | 1         |        |
+| .m4a       | alac      | s32           | 2         |        |
+| .m4a       | alac      | s32           | 6         |        |
+| .m4a       | alac      | s32           | 8         |        |
+| .m4a       | alac      | s32p          | 1         |        |
+| .m4a       | alac      | s32p          | 2         |        |
+| .m4a       | alac      | s32p          | 6         |        |
+| .m4a       | alac      | s32p          | 8         |        |
+| .m4a       | alac      | flt           | 1         |        |
+| .m4a       | alac      | flt           | 2         |        |
+| .m4a       | alac      | flt           | 6         |        |
+| .m4a       | alac      | flt           | 8         |        |
+| .m4a       | alac      | fltp          | 1         |        |
+| .m4a       | alac      | fltp          | 2         |        |
+| .m4a       | alac      | fltp          | 6         |        |
+| .m4a       | alac      | fltp          | 8         |        |
+| .mp3       | mp3       | s16           | 1         |        |
+| .mp3       | mp3       | s16           | 2         |        |
+| .mp3       | mp3       | s16p          | 1         |        |
+| .mp3       | mp3       | s16p          | 2         |        |
+| .mp3       | mp3       | flt           | 1         |        |
+| .mp3       | mp3       | flt           | 2         |        |
+| .mp3       | mp3       | fltp          | 1         |        |
+| .mp3       | mp3       | fltp          | 2         |        |
+| .oga       | vorbis    | fltp          | 1         |        |
+| .oga       | vorbis    | fltp          | 2         |        |
+| .oga       | vorbis    | fltp          | 6         |        |
+| .oga       | opus      | fltp          | 1         |        |
+| .oga       | opus      | fltp          | 2         |        |
+| .oga       | opus      | fltp          | 6         |        |
+| .oga       | opus      | fltp          | 8         |        |
+| .oga       | speex     | flt           | 1         |        |
+| .oga       | speex     | fltp          | 1         |        |
+| .oga       | flac      | s16           | 1         |        |
+| .oga       | flac      | s16           | 2         |        |
+| .oga       | flac      | s16           | 6         |        |
+| .oga       | flac      | s16           | 8         |        |
+| .oga       | flac      | s16p          | 1         |        |
+| .oga       | flac      | s16p          | 2         |        |
+| .oga       | flac      | s16p          | 6         |        |
+| .oga       | flac      | s16p          | 8         |        |
+| .oga       | flac      | s32           | 1         |        |
+| .oga       | flac      | s32           | 2         |        |
+| .oga       | flac      | s32           | 6         |        |
+| .oga       | flac      | s32           | 8         |        |
+| .oga       | flac      | s32p          | 1         |        |
+| .oga       | flac      | s32p          | 2         |        |
+| .oga       | flac      | s32p          | 6         |        |
+| .oga       | flac      | s32p          | 8         |        |
+| .oga       | flac      | flt           | 1         |        |
+| .oga       | flac      | flt           | 2         |        |
+| .oga       | flac      | flt           | 6         |        |
+| .oga       | flac      | flt           | 8         |        |
+| .oga       | flac      | fltp          | 1         |        |
+| .oga       | flac      | fltp          | 2         |        |
+| .oga       | flac      | fltp          | 6         |        |
+| .oga       | flac      | fltp          | 8         |        |
+| .ogg       | vorbis    | fltp          | 1         |        |
+| .ogg       | vorbis    | fltp          | 2         |        |
+| .ogg       | vorbis    | fltp          | 6         |        |
+| .ogg       | opus      | fltp          | 1         |        |
+| .ogg       | opus      | fltp          | 2         |        |
+| .ogg       | opus      | fltp          | 6         |        |
+| .ogg       | opus      | fltp          | 8         |        |
+| .ogg       | speex     | flt           | 1         |        |
+| .ogg       | speex     | fltp          | 1         |        |
+| .ogg       | flac      | s16           | 1         |        |
+| .ogg       | flac      | s16           | 2         |        |
+| .ogg       | flac      | s16           | 6         |        |
+| .ogg       | flac      | s16           | 8         |        |
+| .ogg       | flac      | s16p          | 1         |        |
+| .ogg       | flac      | s16p          | 2         |        |
+| .ogg       | flac      | s16p          | 6         |        |
+| .ogg       | flac      | s16p          | 8         |        |
+| .ogg       | flac      | s32           | 1         |        |
+| .ogg       | flac      | s32           | 2         |        |
+| .ogg       | flac      | s32           | 6         |        |
+| .ogg       | flac      | s32           | 8         |        |
+| .ogg       | flac      | s32p          | 1         |        |
+| .ogg       | flac      | s32p          | 2         |        |
+| .ogg       | flac      | s32p          | 6         |        |
+| .ogg       | flac      | s32p          | 8         |        |
+| .ogg       | flac      | flt           | 1         |        |
+| .ogg       | flac      | flt           | 2         |        |
+| .ogg       | flac      | flt           | 6         |        |
+| .ogg       | flac      | flt           | 8         |        |
+| .ogg       | flac      | fltp          | 1         |        |
+| .ogg       | flac      | fltp          | 2         |        |
+| .ogg       | flac      | fltp          | 6         |        |
+| .ogg       | flac      | fltp          | 8         |        |
+| .opus      | opus      | fltp          | 1         |        |
+| .opus      | opus      | fltp          | 2         |        |
+| .opus      | opus      | fltp          | 6         |        |
+| .opus      | opus      | fltp          | 8         |        |
+| .wav       | pcm_alaw  | s16           | 1         |        |
+| .wav       | pcm_alaw  | s16           | 2         |        |
+| .wav       | pcm_alaw  | s16p          | 1         |        |
+| .wav       | pcm_alaw  | s16p          | 2         |        |
+| .wav       | pcm_mulaw | s16           | 1         |        |
+| .wav       | pcm_mulaw | s16           | 2         |        |
+| .wav       | pcm_mulaw | s16p          | 1         |        |
+| .wav       | pcm_mulaw | s16p          | 2         |        |
+| .wav       | pcm_s8    | s8            | 1         |        |
+| .wav       | pcm_s8    | s8            | 2         |        |
+| .wav       | pcm_s8    | s8            | 6         |        |
+| .wav       | pcm_s8    | s8            | 8         |        |
+| .wav       | pcm_s16le | s16           | 1         |        |
+| .wav       | pcm_s16le | s16           | 2         |        |
+| .wav       | pcm_s16le | s16           | 6         |        |
+| .wav       | pcm_s16le | s16           | 8         |        |
+| .wav       | pcm_s16le | s16p          | 1         |        |
+| .wav       | pcm_s16le | s16p          | 2         |        |
+| .wav       | pcm_s16le | s16p          | 6         |        |
+| .wav       | pcm_s16le | s16p          | 8         |        |
+| .wav       | pcm_s16be | s16           | 1         |        |
+| .wav       | pcm_s16be | s16           | 2         |        |
+| .wav       | pcm_s16be | s16           | 6         |        |
+| .wav       | pcm_s16be | s16           | 8         |        |
+| .wav       | pcm_s16be | s16p          | 1         |        |
+| .wav       | pcm_s16be | s16p          | 2         |        |
+| .wav       | pcm_s16be | s16p          | 6         |        |
+| .wav       | pcm_s16be | s16p          | 8         |        |
+| .wav       | pcm_s24le | s32           | 1         |        |
+| .wav       | pcm_s24le | s32           | 2         |        |
+| .wav       | pcm_s24le | s32           | 6         |        |
+| .wav       | pcm_s24le | s32           | 8         |        |
+| .wav       | pcm_s24le | s32p          | 1         |        |
+| .wav       | pcm_s24le | s32p          | 2         |        |
+| .wav       | pcm_s24le | s32p          | 6         |        |
+| .wav       | pcm_s24le | s32p          | 8         |        |
+| .wav       | pcm_s24be | s32           | 1         |        |
+| .wav       | pcm_s24be | s32           | 2         |        |
+| .wav       | pcm_s24be | s32           | 6         |        |
+| .wav       | pcm_s24be | s32           | 8         |        |
+| .wav       | pcm_s24be | s32p          | 1         |        |
+| .wav       | pcm_s24be | s32p          | 2         |        |
+| .wav       | pcm_s24be | s32p          | 6         |        |
+| .wav       | pcm_s24be | s32p          | 8         |        |
+| .wav       | pcm_s32le | s32           | 1         |        |
+| .wav       | pcm_s32le | s32           | 2         |        |
+| .wav       | pcm_s32le | s32           | 6         |        |
+| .wav       | pcm_s32le | s32           | 8         |        |
+| .wav       | pcm_s32le | s32p          | 1         |        |
+| .wav       | pcm_s32le | s32p          | 2         |        |
+| .wav       | pcm_s32le | s32p          | 6         |        |
+| .wav       | pcm_s32le | s32p          | 8         |        |
+| .wav       | pcm_s32be | s32           | 1         |        |
+| .wav       | pcm_s32be | s32           | 2         |        |
+| .wav       | pcm_s32be | s32           | 6         |        |
+| .wav       | pcm_s32be | s32           | 8         |        |
+| .wav       | pcm_s32be | s32p          | 1         |        |
+| .wav       | pcm_s32be | s32p          | 2         |        |
+| .wav       | pcm_s32be | s32p          | 6         |        |
+| .wav       | pcm_s32be | s32p          | 8         |        |
+| .wma       | wmav1     | s16           | 1         |        |
+| .wma       | wmav1     | s16           | 2         |        |
+| .wma       | wmav2     | s16           | 1         |        |
+| .wma       | wmav2     | s16           | 2         |        |
+| .wma       | wmav2     | s16           | 6         |        |
