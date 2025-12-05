@@ -6,55 +6,26 @@ codec_dict = {
 
     # Audio
 
-    ".3gp"  : ["aac", "aac (fdk)"],
-    ".aac"  : ["aac", "aac (fdk)"],
-    ".adts" : ["aac", "aac (fdk)"],
-    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
+    ".3gp"  : ["aac"],
+    ".aac"  : ["aac"],
+    ".adts" : ["aac"],
+    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
     # aifc also supports alac coded but needs AIFF-C muxer. Which is unavailable in pyav
     ".aifc" : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
     ".aiff" : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
-    # these 2 needs separate libs installed
-    # ".amr"  : ["amr_nb", "amr_wb"],
-    # ".awb"  : ["amr_wb"],
-
-    # caf file don't work well outside mac
-    # ".caf"  : ["alac"], 
-
     ".flac" : ["flac"],
-    ".m4a"  : ["aac", "aac (fdk)", "alac"],
+    ".m4a"  : ["aac", "alac"],
     ".mp3"  : ["mp3"],
-    ".mp4"  : ["aac", "aac (fdk)"],
     ".oga"  : ["vorbis", "opus", "flac", "speex"],
     ".ogg"  : ["vorbis", "opus", "flac", "speex"],
     ".opus" : ["opus"],
-    ".wav"  : ["alaw", "mulaw", 
-               "s16", "s24", "s32", "flt", "dbl", 
-               "s16p", "s24p", "s32p", "fltp", "dblp", 
-               "u8"], 
-
+    ".wav"  : ["pcm_alaw", "pcm_mulaw",  
+               "pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_s16be"], 
     # wma format also supports wmapro and wmalossless codec. But not available by default for being proprietary
     ".wma"  : ["wmav1", "wmav2"],
-
-    # Images
-
-    ".bmp"  : ["bmp"],
-    ".gif"  : ["gif"],
-    ".ico"  : ["ico"],
-    ".jpg"  : ["mjpeg"],    # FFmpeg encoder name for JPEG
-    ".jpeg" : ["mjpeg"],
-    ".png"  : ["png"],
-    ".pbm"  : ["pbm"],
-    ".pgm"  : ["pgm"],
-    ".pnm"  : ["pnm"],
-    ".ppm"  : ["ppm"],
-    ".svg"  : [],   # FFmpeg can read, not encode
-    ".tif"  : ["tiff"],
-    ".tiff" : ["tiff"],
-    ".webp" : ["webp"],
-
 
     # Subtitles
 
@@ -72,19 +43,18 @@ codec_dict = {
 
     # Video
 
-    # ".3gp"  : ["h264", "mpeg4"],
-    ".asf"  : ["wmv1", "wmv2", "wmv3"],
+    ".asf"  : ["wmv1", "wmv2"],
     ".avi"  : ["mpeg4", "h264", "hevc"],
     ".flv"  : ["flv", "h264"],
     ".m4v"  : ["h264", "mpeg4"],
-    ".mov"  : ["alac", "h264", "hevc", "prores", "mpeg4"],
+    ".mov"  : ["h264", "hevc", "mpeg4"],
     ".mp4"  : ["h264", "hevc", "mpeg4", "libx264", "libx265", "libopenh264", "av1"],
     ".mpg"  : ["mpeg1video", "mpeg2video"],
     ".mpeg" : ["mpeg1video", "mpeg2video"],
     ".mkv"  : ["h264", "hevc", "mpeg4", "vp8", "vp9", "av1"],
     ".ts"   : ["h264", "hevc", "mpeg2video"],
-    ".webm" : ["vp8", "vp9", "av1"],
-    ".wmv"  : ["wmv1", "wmv2", "wmv3"],
+    ".webm" : ["vp8", "vp9", "av1"],    # only [opus, vorbis] audio codec supported | Extremely slow if wrong settings used
+    ".wmv"  : ["wmv1"],
 }
 
 bitrate_range_dict = {
@@ -95,8 +65,8 @@ bitrate_range_dict = {
     "amr_nb": [4750, 12200],       # AMR Narrowband
     "amr_wb": [6600, 23850],       # AMR Wideband
     "mp3": [64000, 320000],
-    "opus": [6000, 510000],        # 6 kbps → 510 kbps
-    "vorbis": [16000, 500000],     # Ogg Vorbis
+    "opus": [500, 256000],          # 0.5 kbps → 256 kbps
+    "vorbis": [36000, 380000],     
     "speex": [2000, 44100],        # Narrowband / wideband
 
     # wma supports some more bitrates but channel specific
@@ -109,8 +79,8 @@ bitrate_range_dict = {
     # Lossless / PCM codecs → bitrate irrelevant
     "alac": None,
     "flac": None,
-    "alaw": None,
-    "mulaw": None,
+    "pcm_alaw": None,
+    "pcm_mulaw": None,
     "s16": None,
     "s24": None,
     "s32": None,
@@ -126,35 +96,20 @@ bitrate_range_dict = {
 
 samplerate_range_dict = {
 
-    # AAC
+    # Lossy
     "aac": [8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000],
-    "aac (fdk)": [32000, 48000],
-
-    # MP3
     "mp3": [32000, 48000],
-
-    # Opus
-    "opus": [8000, 48000],
-
-    # Ogg codecs
-    "vorbis": [32000, 48000],
-    "speex": [8000, 48000],
-
-    # AMR
-    "amr_nb": [8000, 8000],      # fixed 8kHz
-    "amr_wb": [16000, 16000],    # fixed 16kHz
-
-    # WMA
+    "opus": [48000, 48000],
+    "vorbis": [48000, 48000],
+    "speex": [8000, 32000],
     "wmav1": [8000, 11025, 16000, 22050, 32000, 44100],
     "wmav2": [8000, 11025, 16000, 22050, 32000, 44100, 48000],
-    # "wmapro": [8000, 48000],
-    # "wmalossless": [8000, 48000],
 
     # Lossless / PCM
     "alac": [8000, 192000],
     "flac": [8000, 192000],
-    "alaw": [8000, 192000],
-    "mulaw": [8000, 192000],
+    "pcm_alaw": [8000, 192000],
+    "pcm_mulaw": [8000, 192000],
     "pcm_s8": [8000, 192000],
     "pcm_s16le": [8000, 192000],
     "pcm_s24le": [8000, 192000],
@@ -166,69 +121,122 @@ samplerate_range_dict = {
     "pcm_f64": [8000, 192000],
 }
 
-audio_sample_fmt_dict = {
+codec_channels_dict = {
 
-    # Lossless PCM
-    "u8": ["u8"],
-    "pcm_s8": ["pcm_s8"],
-    "s16": ["s16"],
-    "s16p": ["s16p"],
-    "s24": ["s24"],
-    "s24p": ["s24p"],
-    "s32": ["s32"],
-    "s32p": ["s32p"],
-    "flt": ["flt"],
-    "fltp": ["fltp"],
-    "dbl": ["dbl"],
-    "dblp": ["dblp"],
-    "alaw": ["alaw"],
-    "mulaw": ["mulaw"],
+    # Lossy codecs
 
-    # Lossless compressed
-    "flac": ["u8", "s16", "s16p", "s32", "s32p", "flt", "fltp", "dbl", "dblp"],
-    "alac": ["u8", "s16", "s16p", "s32", "s32p", "flt", "fltp"],
+    "aac": [1, 2, 6, 8],
+    "mp3": [1, 2],
+    "opus": [1, 2, 6, 8],
+    "vorbis": [1, 2, 6],
+    "speex": [1],
+    "wmav1": [1, 2],
+    "wmav2": [1, 2, 6],
 
-    # Compressed formats (bit depth is internal / fixed)
-    "aac": None,
-    "aac (fdk)": None,
-    "mp3": None,
-    "opus": None,
-    "vorbis": None,
-    "speex": None,
-    "amr_nb": None,
-    "amr_wb": None,
-    "wmav1": None,
-    "wmav2": None,
-    "wmapro": None,
-    "wmalossless": None
+    # Lossless / PCM codecs
+
+    "alac": [1, 2, 6, 8],
+    "flac": [1, 2, 6, 8],
+    "pcm_alaw": [1, 2],
+    "pcm_mulaw": [1, 2],
+
+    # PCM integer LE/BE: FFmpeg supports up to 8
+    "pcm_s8": [1, 2, 6, 8],
+    "pcm_s16le": [1, 2, 6, 8],
+    "pcm_s24le": [1, 2, 6, 8],
+    "pcm_s32le": [1, 2, 6, 8],
+    "pcm_s16be": [1, 2, 6, 8],
+    "pcm_s24be": [1, 2, 6, 8],
+    "pcm_s32be": [1, 2, 6, 8],
+
+    # PCM float: same
+    "pcm_f32": [1, 2, 6, 8],
+    "pcm_f64": [1, 2, 6, 8],
 }
 
-video_sample_fmt_dict = {
-    # Common H.264 / H.265 codecs
-    "h264": ["yuv420p", "yuv422p", "yuv444p", "nv12", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
-    "hevc": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
 
-    # VP8 / VP9
+audio_sample_fmt_dict = {
+
+    # Uncompressed PCM
+    "pcm_s8": ["u8"],
+    "pcm_s16le": ["s16"],
+    "pcm_s16be": ["s16"],
+
+    # FFmpeg does not expose native s24 sample_fmt
+    "pcm_s24le": ["s32", "s32p"],  
+    "pcm_s24be": ["s32", "s32p"],
+    "pcm_s32le": ["s32", "s32p"],
+    "pcm_s32be": ["s32", "s32p"],
+    "pcm_f32le": ["flt", "fltp"],
+    "pcm_f32be": ["flt", "fltp"],
+    "pcm_f64le": ["dbl", "dblp"],
+    "pcm_f64be": ["dbl", "dblp"],
+    "pcm_alaw": ["s16", "s16p"],
+    "pcm_mulaw": ["s16", "s16p"],
+
+    # Lossless compressed codecs
+    "flac": ["s16", "s32"],
+    "alac": ["s16", "s16p", "s32", "s32p", "flt", "fltp"],
+
+
+    # Lossy codecs — sample_fmt fixed, reject others
+    # They do *not* accept arbitrary formats
+    "aac": ["u8",  "s16",  "s16p", "s32",  "s32p", "flt", "fltp", "dbl", "dblp"],
+    "mp3": ["s16p", "s16", "flt", "fltp"],
+    "opus": ["flt"],
+    "vorbis": ["fltp"],
+    "speex": ["flt", "fltp"],
+    "wmav1": ["s16"],
+    "wmav2": ["s16"],
+}
+
+
+video_sample_fmt_dict = {
+    "av1": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+
+    "h264": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le", "nv12"],
+    "libx264": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le", "nv12"],
+    "libopenh264": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le", "nv12"],
+
+    "h265": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+    "hevc": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+    "libx265": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+
     "vp8": ["yuv420p", "yuv422p", "yuv444p"],
     "vp9": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
 
-    # AV1
-    "av1": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
-
-    # MPEG-2 / MPEG-4
-    "mpeg2video": ["yuv420p", "yuv422p", "yuv444p"],
-    "mpeg4": ["yuv420p", "yuv422p", "yuv444p"],
+    "flv": ["yuv420p"],
+    "mpeg1video": ["yuv420p"],
+    "mpeg2video": ["yuv420p"],
+    "mpeg4": ["yuv420p"],
+    "wmv1" : ["yuv420p"],
+    "wmv2" : ["yuv420p"],
 
     # Lossless / uncompressed video
     "rawvideo": ["rgb24", "bgr24", "rgba", "bgra", "yuv420p", "yuv422p", "yuv444p", "gray", "yuv420p10le", "yuv422p10le"],
 
-    # Others
-    "prores": ["yuv422p", "yuv422p10le", "yuv444p10le"],
+    # Proprietary (Unavailable to use at API)
+    "prores": ["yuv422p10le", "yuv444p10le"],
     "dnxhd": ["yuv422p", "yuv422p10le"],
 
     # Placeholder for other codecs, default to common 8-bit YUV
     "default": ["yuv420p", "yuv422p", "yuv444p", "rgb24"]
 }
+
+frame_rate_dict = {
+    "mpeg4" : [24, 120],
+    "wmv1" : [24, 30],
+    "wmv2" : [24, 30],
+}
+
+preset_list = {"veryslow", "slower", "slow", "medium", "fast", "faster", "veryfast", "superfast", "ultrafast"}
+profile_list = {"baseline", "high", "main"}
+tune_list = {"animation", "fastdecode", "film", "grain", "stillimage", "zerolatency"}
+
+# list of video codecs that support crf, preset, profile and tune
+codec_cppt_support_list = {"h264", "libx264", "libopenh264", "h265", "libx265", "hevc"}
+# list of video codecs that support crf, preset and profile but not tune
+codec_cpp_support_list = {"av1", "vp9"}
 
 
 media_type_ext_dict = {
@@ -238,16 +246,6 @@ media_type_ext_dict = {
         ".m4a", ".mp3", "mp4", 
         ".oga", ".ogg", ".opus", 
         ".wav", ".wma" 
-    ],
-    "image": [
-        ".bmp", 
-        ".gif", 
-        ".ico", 
-        ".jpg", ".jpeg", 
-        ".png", ".pbm", ".pgm", ".pnm", ".ppm", 
-        ".svg", 
-        ".tif", ".tiff", 
-        ".webp",
     ],
     "subtitle": [
         ".ass",
@@ -267,13 +265,14 @@ media_type_ext_dict = {
     ],
 }
 
-
 def checkCodecCompatibility(ext, codecname) -> bool:
 
     # 1: Check extension
     if ext not in codec_dict: 
         print(f"SimpleMP: Unknownn media file extension: {codecname}")
         return False
+
+    if codecname == "": return True     # in case of defaults
 
     # 2: Check codec existence
     all_codecs = {c for codecs in codec_dict.values() for c in codecs}
@@ -349,38 +348,82 @@ def checkAudioSamplefmtCompatibility(codecname : str, sample_fmt : str) -> bool:
     
     return True 
 
-def checkVideoSamplefmtCompatibility(codecname, sample_fmt) -> bool:
+def checkVideoSamplefmtCompatibility(codecname, pixel_fmt) -> bool:
 
-    if sample_fmt not in video_sample_fmt_dict[codecname]:
-        print(f"SampleMP: Incompatible sample format for codec: {codecname}"
-              "Supported sample formats: "
+    if pixel_fmt not in video_sample_fmt_dict[codecname]:
+        print(f"SampleMP: Incompatible sample format for codec: {codecname}\n"
+              "Supported sample formats: \n"
               f"{video_sample_fmt_dict[codecname]}") 
         return False
     
     return True 
 
-def checkMediaCompatibility(ext, codecname, samplerate, samplefmt, bitrate : int) -> bool: 
 
+
+def checkMediaCompatibility(ext, 
+                            audio_codecname, video_codecname,
+                            samplerate, samplefmt : str, pixel_fmt : str,
+                            bitrate : int, bitrate_video : int) -> bool: 
 
     mediatype = -1
 
     if ext in media_type_ext_dict["audio"]: mediatype = 0
-    if ext in media_type_ext_dict["image"]: mediatype = 1
-    if ext in media_type_ext_dict["subtitle"]: mediatype = 2
-    if ext in media_type_ext_dict["video"]: mediatype = 3
+    if ext in media_type_ext_dict["subtitle"]: mediatype = 1
+    if ext in media_type_ext_dict["video"]: mediatype = 2
 
-    if not checkCodecCompatibility(ext, codecname): 
+    if not checkCodecCompatibility(ext, audio_codecname): 
+        return False
+
+    if not checkCodecCompatibility(ext, video_codecname): 
         return False
     
     match mediatype: 
         # Audio
         case 0:
-            if not checkBitrateCompatibility(codecname, bitrate): return False
-            if not checkSamplerateCompatibility(codecname, samplerate): return False
-            if not checkAudioSamplefmtCompatibility(codecname, samplefmt): return False
+            if not checkBitrateCompatibility(audio_codecname, bitrate): return False
+            if not checkSamplerateCompatibility(audio_codecname, samplerate): return False
+            if not checkAudioSamplefmtCompatibility(audio_codecname, samplefmt): return False
+    
         # Video
-        case 3: 
-            if not checkBitrateCompatibility(codecname, bitrate): return False
-            if not checkVideoSamplefmtCompatibility(codecname, samplefmt): return False
+        case 2: 
+            if not checkBitrateCompatibility(video_codecname, bitrate): return False
+            if not checkVideoSamplefmtCompatibility(video_codecname, pixel_fmt): return False
 
     return True
+
+
+# check video codec's compatibility with crf, preset, profile and tune
+def checkCPPTcompat(codecname : str, crf : int, profile : str, preset : str, tune : str) ->  bool:
+
+    if codecname not in codec_cppt_support_list and codecname not in codec_cpp_support_list: 
+        print(f"SimpleMP: Codec: {codecname} doesn't support crf, preset, profile and tune")
+        return False
+    
+    if crf not in range(0, 51):
+        print(f"SimpleMP: crf outside practical range [0, 51]")
+        return False 
+    
+    if profile not in profile_list: 
+        print(f"SimpleMP: Profile: {profile} is unavailable to use or unavailable or non-exitentn\n"
+              f"Available: {profile_list}")
+        return False
+    
+    if preset not in preset_list: 
+        print(f"SimpleMP: Preset: {preset} is unavailable to use or unavailable or non-exitent\n"
+              f"Available: {preset_list}")
+        return False
+
+    if tune not in tune_list: 
+        print(f"SimpleMP: Profile: {profile} is unavailable to use or unavailable or non-exitent\n"
+              f"Available : {tune_list}")
+        return False
+    
+    if tune in tune_list and codecname in codec_cpp_support_list:
+        print(f"SimpleMP: Codec: {codecname} doesn't support tune")
+        return False
+
+    return True
+
+
+def checkAudioVideoCompat():
+    pass

@@ -1,80 +1,139 @@
+from ast import Sub
+from email.mime import audio
+from fractions import Fraction
+from numbers import Rational
 from random import sample
+from struct import pack
+
 import av
 import av.codec
 import av.datasets
+
 from av.audio.stream import AudioStream
 from av.audio.resampler import AudioResampler
 
+from av.video.stream import VideoStream
+from av.video.reformatter import VideoReformatter
+
+from av.subtitles.stream import SubtitleStream
+
+from av.container import InputContainer, OutputContainer
+
 from typing import cast
 
-# input = av.open(av.datasets.curated("/home/pancake/Music/palpal.mp3"))
-# output = av.open("/home/pancake/Projects/simplemp/dump/testaudio.wav", "w") 
 
-# stream_map = {}
-
-# for istream in input.streams:
-
-#     if istream.type != "audio":
-#         continue
-
-#     ostream = output.add_stream_from_template(istream)
-#     stream_map[istream.index] = ostream
-
-
-# for packet in input.demux():
+def processMedia(
+        incontainer : InputContainer,
+        outcontainer : OutputContainer,
+        stream_map = {},
+        width : int = 800, 
+        height : int = 600,
+):
     
-#     # skip flushing packets that demuxer generates
-#     if packet.dts is None:
-#         continue
+    for packet in incontainer.demux():
+        
+        if packet.stream_index not in stream_map:
+            continue
 
-#     packet.stream = stream_map[packet.stream.index]
-#     output.mux(packet)
+        info = stream_map[packet.stream_index]
 
-# input.close()
-# output.close()
+        for frame in packet.decode():
+
+            if info["type"] == "audio":
+                frame = info["resampler"].resample(frame)
+                for f in frame:
+                    for outpacket in info["ostream"].encode(f):
+                        outcontainer.mux(outpacket)
+            
+            elif info["type"] == "video": 
+                rescaled_frame = frame.reformat(width=width, height=height, format="yuv420p") # type: ignore
+                for outpacket in info["ostream"].encode(rescaled_frame):
+                    outcontainer.mux(outpacket)
+            
+            elif info["type"] == "subtitle":
+                outcontainer.mux(packet)
+
+    # Flush all streams
+    for info in stream_map.values():
+        for packet_out in info["ostream"].encode(None):
+            outcontainer.mux(packet_out)
 
 
 def smpcore(
         inputfilename : str,
         outputfilename : str,
-        codecname : str,
+
+        # Audio
+        audio_codecname : str,
         bitrate : int, 
         sample_rate : int, 
-        sample_fmt : str
+        sample_fmt : str,
+
+        # Video
+        video_codecname : str,
+        bitrate_vdo : int,
+        frame_rate: int,
+        width : int, 
+        height : int,
+        pixel_fmt : str,
+        preset : str, 
+        tune : str, 
+        profile : str, 
+        crf : int, 
 ):
     
-    input = av.open(inputfilename)
-    output = av.open(outputfilename, mode="w")
+    incontainer = av.open(inputfilename)
+    outcontainer = av.open(outputfilename, mode="w")
 
-    istreams = input.streams.audio[0] 
+    # map media stream (audio / video / subtitle) to output streams
+    stream_map = {}
 
-    ostream = cast(AudioStream, output.add_stream(codec_name=codecname, rate=sample_rate))
-    ostream.bit_rate = bitrate
-    ostream.layout = "mono"
+    for istreams in incontainer.streams:
+      
+        if istreams.type == "audio": 
+            # print('Audio stream detected')
+            ostreama = cast(AudioStream, outcontainer.add_stream(
+                codec_name=audio_codecname,
+                rate=sample_rate, 
+            ))
+            
+            ostreama.bit_rate = bitrate
+            
+            resampler = AudioResampler(
+                format=sample_fmt, 
+                rate=sample_rate,
+            )
 
-    if sample_rate is not None and sample_rate != "": 
-        ostream.sample_rate = sample_rate
+            stream_map[istreams.index] = { "type": "audio", "ostream":ostreama, "resampler":resampler}
 
-   # Create a resampler to convert input to something the encoder accepts
-    resampler = AudioResampler(
-        format="fltp",         # safe default for AAC
-        layout="mono",         # match ostream.layout
-        rate=ostream.rate      # match ostream rate
-    )
 
-    for frames in input.decode(istreams):
-        # TODO: Apply filters here
-        frames = resampler.resample(frames) 
+        elif istreams.type == "subtitle":
+            # print('Subtitle stream detected')
 
-        for frame in frames:
-            for packet in ostream.encode(frame):
-                output.mux(packet)
+            ostreams = cast(SubtitleStream, outcontainer.add_stream_from_template(istreams))
+            stream_map[istreams.index] = {"type":"subtitle", "ostream":ostreams}
 
-    # flush encoder
-    for packet in ostream.encode(None):
-        output.mux(packet)
+        elif istreams.type == "video": 
+            # print('Video stream detected')
 
-    input.close()
-    output.close()
+            ostreamv = cast(VideoStream, outcontainer.add_stream(
+                codec_name=video_codecname,
+                rate=frame_rate,
+            ))
+            ostreamv.bit_rate = bitrate_vdo 
+            ostreamv.options = {"crf":str(crf), "preset":preset, "profile":profile, "tune":tune}
+            ostreamv.pix_fmt=pixel_fmt
+            ostreamv.height=height
+            ostreamv.width=width
+            ostreamv.time_base = Fraction(1, frame_rate)
+            
+            stream_map[istreams.index] = {"type":"video", "ostream":ostreamv}
 
+        else: 
+            print('SimpleMP: Unknown media stream detected')
+
+
+    processMedia(incontainer, outcontainer, stream_map, width, height)
     
+    incontainer.close()
+    outcontainer.close()
