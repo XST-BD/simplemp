@@ -27,20 +27,6 @@ codec_dict = {
     # wma format also supports wmapro and wmalossless codec. But not available by default for being proprietary
     ".wma"  : ["wmav1", "wmav2"],
 
-    # Subtitles
-
-    ".ass"  : ["ass"],
-    ".dfxp" : ["ttml"],
-    ".idx"  : ["vobsub"],     # VobSub (DVD bitmap) .idx+.sub pair
-    ".scc"  : ["scc"],        # Scenarist Closed Caption
-    ".srt"  : ["subrip"],
-    ".ssa"  : ["ssa"],
-    ".stl"  : ["ebu_stl"],    # EBU STL broadcast subs
-    ".sub"  : ["microdvd"],   # text-based MicroDVD subtitles
-    ".sup"  : ["pgssub"],     # Blu-ray PGS bitmap subtitles
-    ".ttml" : ["ttml"],
-    ".vtt"  : ["webvtt"],
-
     # Video
 
     ".asf"  : ["wmv1", "wmv2"],

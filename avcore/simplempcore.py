@@ -21,6 +21,8 @@ from av.container import InputContainer, OutputContainer
 
 from typing import cast
 
+from multidict import istr
+
 
 def processMedia(
         incontainer : InputContainer,
@@ -28,6 +30,7 @@ def processMedia(
         stream_map = {},
         width : int = 800, 
         height : int = 600,
+        mute : bool = False,
 ):
     
     for packet in incontainer.demux():
@@ -40,16 +43,20 @@ def processMedia(
         for frame in packet.decode():
 
             if info["type"] == "audio":
-                frame = info["resampler"].resample(frame)
-                for f in frame:
-                    for outpacket in info["ostream"].encode(f):
-                        outcontainer.mux(outpacket)
+
+                if not mute : 
+                    frame = info["resampler"].resample(frame)
+                    for f in frame:
+                        for outpacket in info["ostream"].encode(f):
+                            outcontainer.mux(outpacket)
             
+
             elif info["type"] == "video": 
                 rescaled_frame = frame.reformat(width=width, height=height, format="yuv420p") # type: ignore
                 for outpacket in info["ostream"].encode(rescaled_frame):
                     outcontainer.mux(outpacket)
             
+
             elif info["type"] == "subtitle":
                 outcontainer.mux(packet)
 
@@ -62,6 +69,7 @@ def processMedia(
 def smpcore(
         inputfilename : str,
         outputfilename : str,
+        mute : bool,
 
         # Audio
         audio_codecname : str,
@@ -133,7 +141,7 @@ def smpcore(
             print('SimpleMP: Unknown media stream detected')
 
 
-    processMedia(incontainer, outcontainer, stream_map, width, height)
+    processMedia(incontainer, outcontainer, stream_map, width, height, mute)
     
     incontainer.close()
     outcontainer.close()

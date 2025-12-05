@@ -44,13 +44,6 @@ def smpMediaProcessor(
     preset: str = "",               # encoder preset (fast, slow, etc.)
     profile : str = "", 
     tune : str = "",
-
-    # --------------------
-    # Subtitle only
-    codec_subtitle: str = "",           # e.g., srt, ass, mov_text
-    subtitle_encoding: str = "utf-8",   # character encoding
-    embed_subtitles: bool = False,      # burn-in subtitles
-    extract_subtitles: bool = False,    # extract subtitle stream only
 ):
     """
     Unified media processor function for audio, video, image, and subtitles.
@@ -64,7 +57,8 @@ def smpMediaProcessor(
         print("SimpleMP: Input file doesn't exist")
         return
 
-    if not outputfilename: 
+    # Output file unneccessary for overwrite
+    if not outputfilename and overwrite == False: 
         print("SimpleMP: Output file not specified")
         return
      
@@ -74,6 +68,9 @@ def smpMediaProcessor(
             pass
 
     input = av.open(str(inputfilename))
+
+    if overwrite: 
+        outputfilename = inputfilename
     
     # ==== debug
     debuglog.debuglog(input, debug)
@@ -89,28 +86,29 @@ def smpMediaProcessor(
         return
     
     simplempcore.smpcore(
-                inputfilename, outputfilename,
+                inputfilename, outputfilename,mute=mute,
 
                 # Audio
                 audio_codecname=codec_audio, bitrate=bitrate, sample_fmt=sample_fmt, sample_rate=samplerate, 
 
                 # Video
                 video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
-                width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,         
+                width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,        
             )
 
 
 smpMediaProcessor(
-            inputfilename="../dump/a2a/testaudio.aac", 
-            outputfilename="../dump/a2a/audio9.wav",
+            inputfilename="../dump/", 
+            outputfilename="../dump/a2a/subtitle0.ass",
 
             # Audio
             codec_audio="pcm_s32le", bitrate=2000, sample_fmt="s32p", samplerate=8000,
 
             # Video
-            # codec_video="h264", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=24, width=1280, height=720,
-            # crf=24, tune="zerolatency", profile="high", preset="fast",
-            
+            codec_video="h264", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=24, width=1280, height=720,
+            crf=24, tune="zerolatency", profile="high", preset="fast",
+        
+
             # General
             threads=4, mute=False, loop=1, debug=False,
         )

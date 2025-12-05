@@ -250,28 +250,3 @@ This document summarizes the compatibility and feature testing performed on the 
 | .wmv       | wmv1      | yuv420p       |        | 
 
 
-# Subtitle Tests
-| Extension  | Codec     | Embed  | Status |
-|------------|-----------|--------|--------|
-| .ass       | ass       | True   |        |
-| .ass       | ass       | False  |        |
-| .dfxp      | ttml      | True   |        |
-| .dfxp      | ttml      | False  |        |
-| .idx       | vobsub    | True   |        |
-| .idx       | vobsub    | False  |        |
-| .scc       | scc       | True   |        |
-| .scc       | scc       | False  |        |
-| .srt       | subrip    | True   |        |
-| .srt       | subrip    | False  |        |
-| .ssa       | ssa       | True   |        |
-| .ssa       | ssa       | False  |        |
-| .stl       | ebu_stl   | True   |        |
-| .stl       | ebu_stl   | False  |        |
-| .sub       | microdvd  | True   |        |
-| .sub       | microdvd  | False  |        |
-| .sup       | pgssub    | True   |        |
-| .sup       | pgssub    | False  |        |
-| .ttml      | ttml      | True   |        |
-| .ttml      | ttml      | False  |        |
-| .vtt       | webvtt    | True   |        |
-| .vtt       | webvtt    | False  |        |
