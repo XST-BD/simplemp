@@ -116,137 +116,106 @@ This document summarizes the compatibility and feature testing performed on the 
 | .wma       | wmav1     | s16           |   ✔️   |
 | .wma       | wmav2     | s16           |   ✔️   |
 
+
+Notes: 
+aac not supported with .webm
+alac not supported with .webm
+hevc not supported with .avi
+opus not supported with .avi, .m4v
+speex not supported with .m4v, .webm
+vorbis not supported with .flv, .webm
+
+flac not supported with .m4v, .webm
+
 # Video Tests
 | Extension  | Codec     | Pixel Format  | Status |
 |------------|-----------|---------------|--------|
-| .asf       | wmv1      | yuv420p       |        |
-| .asf       | wmv2      | yuv420p       |        |
-| .avi       | mpeg4     | yuv420p       |        |
-| .avi       | h264      | yuv420p       |        |
-| .avi       | h264      | yuv422p       |        |
-| .avi       | h264      | yuv444p       |        |
-| .avi       | h264      | yuv420p10le   |        |
-| .avi       | h264      | yuv422p10le   |        |
-| .avi       | h264      | yuv422p10le   |        |
-| .avi       | h264      | nv12          |        |
-| .avi       | hevc      | yuv420p       |        |
-| .avi       | hevc      | yuv422p       |        |
-| .avi       | hevc      | yuv444p       |        |
-| .avi       | hevc      | yuv420p10le   |        |
-| .avi       | hevc      | yuv422p10le   |        |
-| .avi       | hevc      | yuv422p10le   |        |
-| .flv       | flv       | yuv420p       |        |
-| .flv       | h264      | yuv420p       |        |
-| .flv       | h264      | yuv422p       |        |
-| .flv       | h264      | yuv444p       |        |
-| .flv       | h264      | yuv420p10le   |        |
-| .flv       | h264      | yuv422p10le   |        |
-| .flv       | h264      | yuv422p10le   |        |
-| .flv       | h264      | nv12          |        |
-| .m4v       | mpeg4     | yuv420p       |        |
-| .m4v       | h264      | yuv420p       |        |
-| .m4v       | h264      | yuv422p       |        |
-| .m4v       | h264      | yuv444p       |        |
-| .m4v       | h264      | yuv420p10le   |        |
-| .m4v       | h264      | yuv422p10le   |        |
-| .m4v       | h264      | yuv422p10le   |        |
-| .m4v       | h264      | nv12          |        |
-| .mov       | mpeg4     | yuv420p       |        |
-| .mov       | h264      | yuv420p       |        |
-| .mov       | h264      | yuv422p       |        |
-| .mov       | h264      | yuv444p       |        |
-| .mov       | h264      | yuv420p10le   |        |
-| .mov       | h264      | yuv422p10le   |        |
-| .mov       | h264      | yuv422p10le   |        |
-| .mov       | h264      | nv12          |        |
-| .mov       | hevc      | yuv420p       |        |
-| .mov       | hevc      | yuv422p       |        |
-| .mov       | hevc      | yuv444p       |        |
-| .mov       | hevc      | yuv420p10le   |        |
-| .mov       | hevc      | yuv422p10le   |        |
-| .mov       | hevc      | yuv422p10le   |        |
-| .mp4       | av1       | yuv420p       |        |
-| .mp4       | av1       | yuv422p       |        |
-| .mp4       | av1       | yuv444p       |        |
-| .mp4       | av1       | yuv420p10le   |        |
-| .mp4       | av1       | yuv422p10le   |        |
-| .mp4       | av1       | yuv422p10le   |        |
-| .mp4       | h264      | yuv420p       |        |
-| .mp4       | h264      | yuv422p       |        |
-| .mp4       | h264      | yuv444p       |        |
-| .mp4       | h264      | yuv420p10le   |        |
-| .mp4       | h264      | yuv422p10le   |        |
-| .mp4       | h264      | yuv422p10le   |        |
-| .mp4       | h264      | nv12          |        |
-| .mp4       | hevc      | yuv420p       |        |
-| .mp4       | hevc      | yuv422p       |        |
-| .mp4       | hevc      | yuv444p       |        |
-| .mp4       | hevc      | yuv420p10le   |        |
-| .mp4       | hevc      | yuv422p10le   |        |
-| .mp4       | hevc      | yuv422p10le   |        |
-| .mp4       | mpeg4     | yuv420p       |        |
-| .mpg       | mpeg1video| yuv420p       |        |
-| .mpg       | mpeg2video| yuv420p       |        |
-| .mpeg      | mpeg1video| yuv420p       |        |
-| .mpeg      | mpeg2video| yuv420p       |        |
-| .mkv       | av1       | yuv420p       |        |
-| .mkv       | av1       | yuv422p       |        |
-| .mkv       | av1       | yuv444p       |        |
-| .mkv       | av1       | yuv420p10le   |        |
-| .mkv       | av1       | yuv422p10le   |        |
-| .mkv       | av1       | yuv444p10le   |        |
-| .mkv       | h264      | yuv420p       |        |
-| .mkv       | h264      | yuv422p       |        |
-| .mkv       | h264      | yuv444p       |        |
-| .mkv       | h264      | yuv420p10le   |        |
-| .mkv       | h264      | yuv422p10le   |        |
-| .mkv       | h264      | yuv422p10le   |        |
-| .mkv       | h264      | nv12          |        |
-| .mkv       | hevc      | yuv420p       |        |
-| .mkv       | hevc      | yuv422p       |        |
-| .mkv       | hevc      | yuv444p       |        |
-| .mkv       | hevc      | yuv420p10le   |        |
-| .mkv       | hevc      | yuv422p10le   |        |
-| .mkv       | hevc      | yuv422p10le   |        |
-| .mkv       | mpeg4     | yuv420p       |        |
-| .mkv       | vp8       | yuv420p       |        |
-| .mkv       | vp8       | yuv422p       |        |
-| .mkv       | vp8       | yuv444p       |        |
-| .mkv       | vp9       | yuv420p       |        |
-| .mkv       | vp9       | yuv422p       |        |
-| .mkv       | vp9       | yuv444p       |        |
-| .mkv       | vp9       | yuv420p10le   |        |
-| .mkv       | vp9       | yuv422p10le   |        |
-| .mkv       | vp9       | yuv444p10le   |        |
-| .ts        | mpeg2video| yuv420p       |        |
-| .ts        | h264      | yuv420p       |        |
-| .ts        | h264      | yuv422p       |        |
-| .ts        | h264      | yuv444p       |        |
-| .ts        | h264      | yuv420p10le   |        |
-| .ts        | h264      | yuv422p10le   |        |
-| .ts        | h264      | yuv422p10le   |        |
-| .ts        | h264      | nv12          |        |
-| .ts        | hevc      | yuv420p       |        |
-| .ts        | hevc      | yuv422p       |        |
-| .ts        | hevc      | yuv444p       |        |
-| .ts        | hevc      | yuv420p10le   |        |
-| .ts        | hevc      | yuv422p10le   |        |
-| .ts        | hevc      | yuv422p10le   |        |
-| .webm      | av1       | yuv420p       |        |
-| .webm      | av1       | yuv422p       |        |
-| .webm      | av1       | yuv444p       |        |
-| .webm      | av1       | yuv420p10le   |        |
-| .webm      | av1       | yuv422p10le   |        |
-| .webm      | av1       | yuv444p10le   |        |
-| .webm      | vp8       | yuv420p       |        |
-| .webm      | vp8       | yuv422p       |        |
-| .webm      | vp8       | yuv444p       |        |
-| .webm      | vp9       | yuv420p       |        |
-| .webm      | vp9       | yuv422p       |        |
-| .webm      | vp9       | yuv444p       |        |
-| .webm      | vp9       | yuv420p10le   |        |
-| .webm      | vp9       | yuv422p10le   |        |
-| .webm      | vp9       | yuv444p10le   |        |
-| .wmv       | wmv1      | yuv420p       |        | 
+| .asf       | wmv1      | yuv420p       |   ✔️   |
+| .asf       | wmv2      | yuv420p       |   ✔️   |
+| .avi       | mpeg4     | yuv420p       |   ✔️   |
+| .avi       | h264      | yuv420p       |   ✔️   |
+| .avi       | h264      | yuv422p       |   ❌   |
+| .avi       | h264      | yuv444p       |   ❌   |
+| .avi       | h264      | yuv420p10le   |   ❌   |
+| .avi       | h264      | yuv422p10le   |   ❌   |
+| .avi       | h264      | yuv422p10le   |   ❌   |
+| .avi       | h264      | nv12          |   ✔️   |
+| .flv       | flv       | yuv420p       |   ⚠️   |
+| .flv       | h264      | yuv420p       |   ⚠️   |
+| .flv       | h264      | nv12          |   ⚠️   |
+| .m4v       | mpeg4     | yuv420p       |   ✔️   |
+| .m4v       | h264      | yuv420p       |   ✔️   |
+| .m4v       | h264      | nv12          |   ✔️   |
+| .mov       | mpeg4     | yuv420p       |   ✔️   |
+| .mov       | h264      | yuv420p       |   ✔️   |
+| .mov       | h264      | nv12          |   ✔️   |
+| .mov       | hevc      | yuv420p       |   ✔️   |
+| .mov       | hevc      | yuv422p       |   ✔️   |
+| .mov       | hevc      | yuv444p       |   ✔️   |
+| .mov       | hevc      | yuv420p10le   |   ✔️   |
+| .mov       | hevc      | yuv422p10le   |   ✔️   |
+| .mov       | hevc      | yuv444p10le   |   ✔️   |
+| .mp4       | h264      | yuv420p       |   ✔️   |
+| .mp4       | h264      | nv12          |   ✔️   |
+| .mp4       | hevc      | yuv420p       |   ✔️   |
+| .mp4       | hevc      | yuv422p       |   ✔️   |
+| .mp4       | hevc      | yuv444p       |   ✔️   |
+| .mp4       | hevc      | yuv420p10le   |   ✔️   |
+| .mp4       | hevc      | yuv422p10le   |   ✔️   |
+| .mp4       | hevc      | yuv422p10le   |   ✔️   |
+| .mp4       | mpeg4     | yuv420p       |   ✔️   |
+| .mpg       | mpeg1video| yuv420p       |   ✔️   |
+| .mpg       | mpeg2video| yuv420p       |   ✔️   |
+| .mpeg      | mpeg1video| yuv420p       |   ✔️   |
+| .mpeg      | mpeg2video| yuv420p       |   ✔️   |
+| .mkv       | av1       | yuv420p       |   ❌   |
+| .mkv       | av1       | yuv422p       |   ❌   |
+| .mkv       | av1       | yuv444p       |   ❌   |
+| .mkv       | av1       | yuv420p10le   |   ❌   |
+| .mkv       | av1       | yuv422p10le   |   ❌   |
+| .mkv       | av1       | yuv444p10le   |   ❌   |
+| .mkv       | h264      | yuv420p       |   ✔️   |
+| .mkv       | h264      | nv12          |   ✔️   |
+| .mkv       | hevc      | yuv420p       |   ✔️   |
+| .mkv       | hevc      | yuv422p       |   ✔️   |
+| .mkv       | hevc      | yuv444p       |   ✔️   |
+| .mkv       | hevc      | yuv420p10le   |   ✔️   |
+| .mkv       | hevc      | yuv422p10le   |   ✔️   |
+| .mkv       | hevc      | yuv422p10le   |   ✔️   |
+| .mkv       | mpeg4     | yuv420p       |   ⚠️   |
+| .mkv       | vp8       | yuv420p       |   ⚠️   |
+| .mkv       | vp8       | yuv422p       |   ❌   |
+| .mkv       | vp8       | yuv444p       |   ❌   |
+| .mkv       | vp9       | yuv420p       |   ❌   |
+| .mkv       | vp9       | yuv422p       |   ❌   |
+| .mkv       | vp9       | yuv444p       |   ❌   |
+| .mkv       | vp9       | yuv420p10le   |   ❌   |
+| .mkv       | vp9       | yuv422p10le   |   ❌   |
+| .mkv       | vp9       | yuv444p10le   |   ❌   |
+| .ts        | mpeg2video| yuv420p       |   ⚠️   |
+| .ts        | h264      | yuv420p       |   ✔️   |
+| .ts        | h264      | nv12          |   ✔️   |
+| .ts        | hevc      | yuv420p       |   ✔️   |
+| .ts        | hevc      | yuv422p       |   ✔️   |
+| .ts        | hevc      | yuv444p       |   ✔️   |
+| .ts        | hevc      | yuv420p10le   |   ✔️   |
+| .ts        | hevc      | yuv422p10le   |   ✔️   |
+| .ts        | hevc      | yuv422p10le   |   ✔️   |
+| .webm      | av1       | yuv420p       |   ❌   |
+| .webm      | av1       | yuv422p       |   ❌   |
+| .webm      | av1       | yuv444p       |   ❌   |
+| .webm      | av1       | yuv420p10le   |   ❌   |
+| .webm      | av1       | yuv422p10le   |   ❌   |
+| .webm      | av1       | yuv444p10le   |   ❌   |
+| .webm      | vp8       | yuv420p       |   ⚠️   |
+| .webm      | vp8       | yuv422p       |   ❌   |
+| .webm      | vp8       | yuv444p       |   ❌   |
+| .webm      | vp9       | yuv420p       |   ❌   |
+| .webm      | vp9       | yuv422p       |   ❌   |
+| .webm      | vp9       | yuv444p       |   ❌   |
+| .webm      | vp9       | yuv420p10le   |   ❌   |
+| .webm      | vp9       | yuv422p10le   |   ❌   |
+| .webm      | vp9       | yuv444p10le   |   ❌   |
+| .wmv       | wmv1      | yuv420p       |   ✔️   | 
 
 
