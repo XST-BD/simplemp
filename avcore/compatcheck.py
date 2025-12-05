@@ -9,7 +9,7 @@ codec_dict = {
     ".3gp"  : ["aac"],
     ".aac"  : ["aac"],
     ".adts" : ["aac"],
-    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s32le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
+    ".aif"  : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
 
     # aifc also supports alac coded but needs AIFF-C muxer. Which is unavailable in pyav
     ".aifc" : ["pcm_s8", "pcm_s16le", "pcm_s16be", "pcm_s24be", "pcm_s32be"],
@@ -22,10 +22,8 @@ codec_dict = {
     ".oga"  : ["vorbis", "opus", "flac", "speex"],
     ".ogg"  : ["vorbis", "opus", "flac", "speex"],
     ".opus" : ["opus"],
-    ".wav"  : ["pcm_alaw", "pcm_mulaw", 
-               "pcm_s8", 
-               "pcm_s16le", "pcm_s24le", "pcm_s32le",
-               "pcm_s16be", "pcm_s24be", "pcm_s32be"], 
+    ".wav"  : ["pcm_alaw", "pcm_mulaw",  
+               "pcm_s16le", "pcm_s24le", "pcm_s32le", "pcm_s16be"], 
     # wma format also supports wmapro and wmalossless codec. But not available by default for being proprietary
     ".wma"  : ["wmav1", "wmav2"],
 
@@ -68,7 +66,7 @@ bitrate_range_dict = {
     "amr_wb": [6600, 23850],       # AMR Wideband
     "mp3": [64000, 320000],
     "opus": [500, 256000],          # 0.5 kbps → 256 kbps
-    "vorbis": [16000, 500000],     # Ogg Vorbis
+    "vorbis": [36000, 380000],     
     "speex": [2000, 44100],        # Narrowband / wideband
 
     # wma supports some more bitrates but channel specific
@@ -101,8 +99,8 @@ samplerate_range_dict = {
     # Lossy
     "aac": [8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000],
     "mp3": [32000, 48000],
-    "opus": [8000, 48000],
-    "vorbis": [32000, 48000],
+    "opus": [48000, 48000],
+    "vorbis": [48000, 48000],
     "speex": [8000, 32000],
     "wmav1": [8000, 11025, 16000, 22050, 32000, 44100],
     "wmav2": [8000, 11025, 16000, 22050, 32000, 44100, 48000],
@@ -160,10 +158,9 @@ codec_channels_dict = {
 audio_sample_fmt_dict = {
 
     # Uncompressed PCM
-    "pcm_u8": ["u8"],
-    "pcm_s8": ["s8"],
-    "pcm_s16le": ["s16", "s16p"],
-    "pcm_s16be": ["s16", "s16p"],
+    "pcm_s8": ["u8"],
+    "pcm_s16le": ["s16"],
+    "pcm_s16be": ["s16"],
 
     # FFmpeg does not expose native s24 sample_fmt
     "pcm_s24le": ["s32", "s32p"],  
@@ -178,15 +175,15 @@ audio_sample_fmt_dict = {
     "pcm_mulaw": ["s16", "s16p"],
 
     # Lossless compressed codecs
-    "flac": ["s16", "s16p", "s32", "s32p", "flt", "fltp"],
+    "flac": ["s16", "s32"],
     "alac": ["s16", "s16p", "s32", "s32p", "flt", "fltp"],
 
 
     # Lossy codecs — sample_fmt fixed, reject others
     # They do *not* accept arbitrary formats
-    "aac": ["fltp"],
+    "aac": ["u8",  "s16",  "s16p", "s32",  "s32p", "flt", "fltp", "dbl", "dblp"],
     "mp3": ["s16p", "s16", "flt", "fltp"],
-    "opus": ["fltp"],
+    "opus": ["flt"],
     "vorbis": ["fltp"],
     "speex": ["flt", "fltp"],
     "wmav1": ["s16"],
@@ -274,6 +271,8 @@ def checkCodecCompatibility(ext, codecname) -> bool:
     if ext not in codec_dict: 
         print(f"SimpleMP: Unknownn media file extension: {codecname}")
         return False
+
+    if codecname == "": return True     # in case of defaults
 
     # 2: Check codec existence
     all_codecs = {c for codecs in codec_dict.values() for c in codecs}
@@ -371,6 +370,9 @@ def checkMediaCompatibility(ext,
     if ext in media_type_ext_dict["audio"]: mediatype = 0
     if ext in media_type_ext_dict["subtitle"]: mediatype = 1
     if ext in media_type_ext_dict["video"]: mediatype = 2
+
+    if not checkCodecCompatibility(ext, audio_codecname): 
+        return False
 
     if not checkCodecCompatibility(ext, video_codecname): 
         return False

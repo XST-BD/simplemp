@@ -1,3 +1,4 @@
+from ast import Sub
 from email.mime import audio
 from fractions import Fraction
 from numbers import Rational
@@ -19,32 +20,6 @@ from av.subtitles.stream import SubtitleStream
 from av.container import InputContainer, OutputContainer
 
 from typing import cast
-
-# input = av.open(av.datasets.curated("/home/pancake/Music/palpal.mp3"))
-# output = av.open("/home/pancake/Projects/simplemp/dump/testaudio.wav", "w") 
-
-# stream_map = {}
-
-# for istream in input.streams:
-
-#     if istream.type != "audio":
-#         continue
-
-#     ostream = output.add_stream_from_template(istream)
-#     stream_map[istream.index] = ostream
-
-
-# for packet in input.demux():
-    
-#     # skip flushing packets that demuxer generates
-#     if packet.dts is None:
-#         continue
-
-#     packet.stream = stream_map[packet.stream.index]
-#     output.mux(packet)
-
-# input.close()
-# output.close()
 
 
 def processMedia(
@@ -93,7 +68,6 @@ def smpcore(
         bitrate : int, 
         sample_rate : int, 
         sample_fmt : str,
-        channels : int,
 
         # Video
         video_codecname : str,
@@ -118,17 +92,15 @@ def smpcore(
       
         if istreams.type == "audio": 
             # print('Audio stream detected')
-
             ostreama = cast(AudioStream, outcontainer.add_stream(
                 codec_name=audio_codecname,
                 rate=sample_rate, 
             ))
+            
             ostreama.bit_rate = bitrate
-            # ostreama.channels = channels
             
             resampler = AudioResampler(
-                # format=sample_fmt, 
-                # layout=ostreama.layout,
+                format=sample_fmt, 
                 rate=sample_rate,
             )
 
