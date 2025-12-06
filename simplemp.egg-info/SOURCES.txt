@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+avcore/__init__.py
+avcore/simplemp.py
+avcore/simplempcore.py
+avcore/validator.py
+simplemp.egg-info/PKG-INFO
+simplemp.egg-info/SOURCES.txt
+simplemp.egg-info/dependency_links.txt
+simplemp.egg-info/top_level.txt
+tests/testtranscode.py
