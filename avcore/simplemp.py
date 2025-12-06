@@ -4,7 +4,7 @@ from typeguard import typechecked
 import av
 import av.logging
 
-import avcore.validator as validator
+from validator import checkMediaCompatibility
 import simplempcore
 
 @typechecked
@@ -70,7 +70,7 @@ def transcode(
 
     # ==== check file extenstion and codec compatibility with settings
     ext = os.path.splitext(outputfilename)[1].lower()
-    if not validator.checkMediaCompatibility(
+    if not checkMediaCompatibility(
         ext, 
         audio_codecname=codec_audio, video_codecname=codec_video, 
         samplerate=samplerate, samplefmt=sample_fmt, pixel_fmt=pixel_fmt,
@@ -88,19 +88,3 @@ def transcode(
                 video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
                 width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,        
             )
-
-
-transcode(
-            inputfilename="../dump/v2v/testvdo.flv", 
-            outputfilename="../dump/v2v/video0.mp4",
-
-            # Audio
-            codec_audio="vorbis", bitrate=44100, sample_fmt="fltp", samplerate=48000,
-
-            # Video
-            codec_video="av1", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=60, width=1280, height=720,
-            # crf=24, tune="zerolatency", profile="high", preset="fast",
-        
-            # General
-            threads=4, mute=False, loop=1, debug=False,
-        )

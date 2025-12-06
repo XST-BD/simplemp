@@ -22,7 +22,7 @@ from av.container import InputContainer, OutputContainer
 from typeguard import typechecked
 from typing import cast
 
-from avcore.validator import codec_cppt_support_list, codec_cpp_support_list
+from validator import codec_cppt_support_list, codec_cpp_support_list
 
 @typechecked
 def processMedia(
