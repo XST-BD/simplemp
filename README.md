@@ -30,17 +30,21 @@ SimpleMP fixes this by providing a well-defined, safe, high-level API that handl
 ### Simple, high-level API
 
 ```
-from simplemp import process_media
+from simplemp import transcode
 
-    process_media(
-        input="input.mp4",
-        output="output.mkv",
-        codec="opus",
-        bitrate=256000,
-        sample_rate=48000,
-        sample_fmt="flt",
+    transcode(
+            inputfilename="testvdo.flv", 
+            outputfilename="video0.mp4",
+
+            # Audio
+            codec_audio="vorbis", bitrate=44100, sample_fmt="fltp", samplerate=48000,
+
+            # Video
+            codec_video="av1", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=60, width=1280, height=720,
         
-    )
+            # General
+            threads=4, mute=False, loop=1, debug=False,
+        )
 ```
 
 No direct FFmpeg arguments.
@@ -113,4 +117,98 @@ Tests for all valid codec/sample-fmt combinations
 Tests for invalid combinations
 Tests for failure mode correctness
 Static analysis (mypy)
-Unit tests + integration tests
+Unit tests + integration tests 
+
+Example of the test matrix:
+
+| Extension  | Codec     | Pixel Format  | Status |
+|------------|-----------|---------------|--------|
+| .mkv       | hevc      | yuv420p10le   |   ✔️   |
+| .mkv       | hevc      | yuv422p10le   |   ✔️   |
+| .mkv       | hevc      | yuv422p10le   |   ✔️   |
+| .mkv       | mpeg4     | yuv420p       |   ⚠️   |
+| .mkv       | vp8       | yuv420p       |   ⚠️   |
+| .mkv       | vp8       | yuv422p       |   ❌   |
+| .mkv       | vp8       | yuv444p       |   ❌   |
+
+Total more than 150 tests has logged in the test matrix. 
+Check ` docs/TEST_MATRIX.md ` for more details.
+
+## Future Plan: High-Performance C++ Edition
+
+A C++ backend is planned using libav*, with:
+
+templates
+
+constexpr validation
+
+noexcept pipelines
+
+SIMD optimized paths
+
+Custom filter engine
+
+extended codec support
+
+Estimated code size:
+
+3,000+ LOCs validation layer
+10,000+ LOCs total implementation
+10,000+ LOCs for filter engine
+
+### Python edition will remain as:
+easy to use
+sane defaults
+fast to prototype
+
+### C++ edition will be:
+low-latency
+ultra-high-performance
+enterprise-ready
+
+## Installation
+
+Coming soon on PyPI:
+
+` pip install simplemp `
+
+Requires FFmpeg with libav support.
+
+## Philosophy
+
+SimpleMP is built on three principles:
+
+* No user should need to understand codec chaos
+* Invalid configs must fail instantly, not silently
+* Defaults should produce production-ready results
+
+Developer experience is a feature.
+
+
+## Documentation
+
+API usage guide (coming soon)
+Examples (coming soon)
+Preset configuration
+Benchmark results
+Test matrix PDF export: Check ` docs/TEST_MATRIX.md `
+
+## Contributing
+
+### Contributions welcome!
+#### Especially:
+* test samples
+* codec benchmarks
+* metadata extraction
+* validation logic
+* CI pipelines
+
+## License
+
+Open source, permissive license.
+To be finalized.
+
+## Author
+
+Main api created by S.M Sadat 
+and TUI is being developed by Atia Farha
