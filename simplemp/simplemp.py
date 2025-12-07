@@ -4,8 +4,8 @@ from typeguard import typechecked
 import av
 import av.logging
 
-from validator import checkMediaCompatibility
-import simplempcore
+from .validator import checkMediaCompatibility
+from .simplempcore import smpcore
 
 @typechecked
 def transcode(
@@ -78,7 +78,7 @@ def transcode(
     ):
         return
     
-    simplempcore.smpcore(
+    smpcore(
                 inputfilename, outputfilename,mute=mute,
 
                 # Audio
