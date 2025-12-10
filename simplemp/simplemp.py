@@ -68,13 +68,15 @@ def transcode(
     if overwrite: 
         outputfilename = inputfilename
 
+    mediatype : int = 0
     # ==== check file extenstion and codec compatibility with settings
     ext = os.path.splitext(outputfilename)[1].lower()
     if not checkMediaCompatibility(
         ext, 
         audio_codecname=codec_audio, video_codecname=codec_video, 
         samplerate=samplerate, samplefmt=sample_fmt, pixel_fmt=pixel_fmt,
-        bitrate=bitrate, bitrate_video=bitrate_video
+        bitrate=bitrate, bitrate_video=bitrate_video,
+        mediatype=mediatype,
     ):
         return
     
@@ -86,5 +88,6 @@ def transcode(
 
                 # Video
                 video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
-                width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,        
+                width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,   
+                mediatype=mediatype,     
             )

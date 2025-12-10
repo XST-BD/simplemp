@@ -16,12 +16,13 @@ from .validator import codec_cppt_support_list, codec_cpp_support_list
 def processMedia(
         incontainer : InputContainer,
         outcontainer : OutputContainer,
+        mediatype : int,
         stream_map = {},
         width : int = 800, 
         height : int = 600,
         mute : bool = False,
 ):
-    
+    print("start processing...")
     for packet in incontainer.demux():
         
         if packet.stream_index not in stream_map:
@@ -32,7 +33,6 @@ def processMedia(
         for frame in packet.decode():
 
             if info["type"] == "audio":
-
                 if not mute: 
                     frame = info["resampler"].resample(frame)
                     for f in frame:
@@ -77,6 +77,8 @@ def smpcore(
         tune : str, 
         profile : str, 
         crf : int, 
+
+        mediatype : int,
 ):
     
     incontainer = av.open(inputfilename)
@@ -88,7 +90,7 @@ def smpcore(
     for istreams in incontainer.streams:
       
         if istreams.type == "audio" and audio_codecname != "": 
-            # print('Audio stream detected')
+            print('Audio stream will be used')
             ostreama = cast(AudioStream, outcontainer.add_stream(
                 codec_name=audio_codecname,
                 rate=sample_rate, 
@@ -100,19 +102,15 @@ def smpcore(
                 format=sample_fmt, 
                 rate=sample_rate,
             )
-
             stream_map[istreams.index] = { "type": "audio", "ostream":ostreama, "resampler":resampler}
 
-
         elif istreams.type == "subtitle":
-            # print('Subtitle stream detected')
-
+            print('Subtitles stream will be used')
             ostreams = cast(SubtitleStream, outcontainer.add_stream_from_template(istreams))
             stream_map[istreams.index] = {"type":"subtitle", "ostream":ostreams}
 
-        elif istreams.type == "video": 
-            # print('Video stream detected')
-
+        elif istreams.type == "video" and video_codecname != "": 
+            print('Video stream will be used')
             ostreamv = cast(VideoStream, outcontainer.add_stream(
                 codec_name=video_codecname,
                 rate=frame_rate,
@@ -136,7 +134,7 @@ def smpcore(
             print('SimpleMP: Unknown media stream detected')
 
 
-    processMedia(incontainer, outcontainer, stream_map, width, height, mute)
+    processMedia(incontainer, outcontainer, mediatype, stream_map, width, height, mute)
     
     incontainer.close()
     outcontainer.close()

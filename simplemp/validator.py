@@ -34,7 +34,7 @@ codec_dict = {
     ".mp4"  : ["h264", "hevc", "mpeg4", "av1"],
     ".mpg"  : ["mpeg1video", "mpeg2video"],
     ".mpeg" : ["mpeg1video", "mpeg2video"],
-    ".mkv"  : ["h264", "hevc", "mpeg4", "vp8", "vp9", "av1"],
+    ".mkv"  : ["h264", "hevc", "mpeg4"],
     ".ts"   : ["h264", "hevc", "mpeg2video"],
     ".webm" : ["vp8", "vp9", "av1"],    # only [opus, vorbis] audio codec supported | Extremely slow if wrong settings used
     ".wmv"  : ["wmv1"],
@@ -161,8 +161,8 @@ audio_sample_fmt_dict = {
     "wmav2": ["s16"],
 }
 
-
-video_sample_fmt_dict = {
+# check pixel formant against codec
+video_sample_fmt_dict1 = {
     "av1": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
 
     "h264": ["yuv420p", "yuv422p", "yuv444p", "nv12"],
@@ -184,6 +184,13 @@ video_sample_fmt_dict = {
     "wmv2" : ["yuv420p"],
 }
 
+# check pixel formant against format (extension)
+video_sample_fmt_dict2 = {
+    ".avi": ["yuv420p"],
+    ".mkv": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le", "nv12"],
+    ".webm": ["yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le"],
+}
+
 frame_rate_dict = {
     "mpeg4" : [24, 120],
     "wmv1" : [24, 30],
@@ -197,7 +204,7 @@ tune_list = {"animation", "fastdecode", "film", "grain", "stillimage", "zerolate
 # list of video codecs that support crf, preset, profile and tune
 codec_cppt_support_list = {"h264"}
 # list of video codecs that support crf, preset and profile but not tune
-codec_cpp_support_list = {"av1", "vp9"}
+codec_cpp_support_list = {"av1"}
 
 
 media_type_ext_dict = {
@@ -300,12 +307,18 @@ def checkAudioSamplefmtCompatibility(codecname : str, sample_fmt : str) -> bool:
     
     return True 
 
-def checkVideoSamplefmtCompatibility(codecname, pixel_fmt) -> bool:
+def checkVideoSamplefmtCompatibility(ext, codecname, pixel_fmt) -> bool:
 
-    if pixel_fmt not in video_sample_fmt_dict[codecname]:
+    if pixel_fmt not in video_sample_fmt_dict2[ext]: 
+        print(f"SampleMP: Incompatible sample format for extension: {ext}\n"
+              "Supported sample formats: \n"
+              f"{video_sample_fmt_dict2[ext]}") 
+        return False
+
+    if pixel_fmt not in video_sample_fmt_dict1[codecname]:
         print(f"SampleMP: Incompatible sample format for codec: {codecname}\n"
               "Supported sample formats: \n"
-              f"{video_sample_fmt_dict[codecname]}") 
+              f"{video_sample_fmt_dict1[codecname]}") 
         return False
     
     return True 
@@ -315,7 +328,8 @@ def checkVideoSamplefmtCompatibility(codecname, pixel_fmt) -> bool:
 def checkMediaCompatibility(ext : str, 
                             audio_codecname : str, video_codecname : str,
                             samplerate, samplefmt : str, pixel_fmt : str,
-                            bitrate : int, bitrate_video : int) -> bool: 
+                            bitrate : int, bitrate_video : int,
+                            mediatype : int) -> bool: 
 
     mediatype = -1
 
@@ -342,10 +356,10 @@ def checkMediaCompatibility(ext : str,
 
             if not checkCodecCompatibility(ext, video_codecname): return False
             if not checkBitrateCompatibility(video_codecname, bitrate_video): return False
-            if not checkVideoSamplefmtCompatibility(video_codecname, pixel_fmt): return False
+            if not checkVideoSamplefmtCompatibility(ext, video_codecname, pixel_fmt): return False
 
         case _:
-            print("Unknonwn or unsupported media type detected")
+            print("SimpleMP: Unknonwn or unsupported media type detected")
             return False
 
     return True

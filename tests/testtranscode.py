@@ -1,16 +1,17 @@
 import os 
 import sys
 
-external_dir = os.path.abspath('/home/pancake/Projects/simplemp/avcore/simplemp.py') 
-sys.path.append(external_dir) 
+import pytest 
 
-from avcore import simplemp
+# external_dir = os.path.abspath('/home/pancake/Projects/simplemp/simplemp') 
+# sys.path.append(external_dir) 
 
-simplemp.transcode(
-    inputfilename="../dump/v2v/notafraid.mp4", outputfilename="../dump/v2v/notafraid.m4v",
-    codec_audio="aac", codec_video="h264", 
-    samplerate=48000, bitrate=128000, sample_fmt="fltp",
-    bitrate_video=4000000, pixel_fmt="nv12", frame_rate=60, crf=24, preset="slow", profile="high", tune="zerolatency",
-    width=1280, height=720,
+from simplemp.simplemp import transcode
+
+transcode(
+    inputfilename="../dump/testv0.0.3/next.mp3", outputfilename="../dump/testv0.0.3/next1.aifc",
+    codec_audio="pcm_s32be", samplerate=48000, bitrate=128000, sample_fmt="s32p",
+    # codec_video="vp9", bitrate_video=4000000, pixel_fmt="yuv422p", frame_rate=60, crf=24, preset="slow", profile="baseline", tune="zerolatency",
+    # width=1280, height=720,
     mute=False, debug=True, overwrite=False
 )
