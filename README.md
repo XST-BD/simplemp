@@ -30,21 +30,15 @@ SimpleMP fixes this by providing a well-defined, safe, high-level API that handl
 ### Simple, high-level API
 
 ```
-from simplemp import transcode
+from simplemp.simplemp import transcode
 
-    transcode(
-            inputfilename="testvdo.flv", 
-            outputfilename="video0.mp4",
-
-            # Audio
-            codec_audio="vorbis", bitrate=44100, sample_fmt="fltp", samplerate=48000,
-
-            # Video
-            codec_video="av1", bitrate_video=4000000, pixel_fmt="yuv420p", frame_rate=60, width=1280, height=720,
-        
-            # General
-            threads=4, mute=False, loop=1, debug=False,
-        )
+transcode(
+    inputfilename="../dump/testv0.0.3/next.mp3", outputfilename="../dump/testv0.0.3/next1.aifc",
+    codec_audio="pcm_s32be", samplerate=48000, bitrate=128000, sample_fmt="s32p",
+    # codec_video="vp9", bitrate_video=4000000, pixel_fmt="yuv422p", frame_rate=60, crf=24, preset="slow", profile="baseline", tune="zerolatency",
+    # width=1280, height=720,
+    mute=False, debug=True, overwrite=False
+)
 ```
 
 No direct FFmpeg arguments.
