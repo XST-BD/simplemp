@@ -11,8 +11,8 @@ from .simplempcore import smpcore
 def transcode(
     # --------------------
     # General (all media types)
-    inputfilename: str = "",
-    outputfilename: str = "",
+    input_file: str = "",
+    output_file: str = "",
     overwrite: bool = False,        # whether to overwrite existing files
     debug: bool = False,            # print debug info
     threads: int = 0,               # ffmpeg threads, 0 = auto
@@ -49,28 +49,28 @@ def transcode(
 
     # ===== check file existence
 
-    if not inputfilename or not os.path.exists(inputfilename): 
+    if not input_file or not os.path.exists(input_file): 
         print("SimpleMP: Input file doesn't exist")
         return
 
     # Output file unneccessary for overwrite
-    if not outputfilename and overwrite == False: 
+    if not output_file and overwrite == False: 
         print("SimpleMP: Output file not specified")
         return
      
-    if not os.path.exists(outputfilename):
+    if not os.path.exists(output_file):
         print("SimpleMP: Output file doesn't exist. Creating it...")
-        with open(outputfilename, 'w') as f:
+        with open(output_file, 'w') as f:
             pass
 
-    input = av.open(str(inputfilename))
+    input = av.open(str(input_file))
 
     if overwrite: 
-        outputfilename = inputfilename
+        outputfilename = input_file
 
     mediatype : int = 0
     # ==== check file extenstion and codec compatibility with settings
-    ext = os.path.splitext(outputfilename)[1].lower()
+    ext = os.path.splitext(output_file)[1].lower()
     if not check_media_compat(
         ext, 
         audio_codecname=codec_audio, video_codecname=codec_video, 
@@ -81,7 +81,7 @@ def transcode(
         return
     
     smpcore(
-                inputfilename, outputfilename,mute=mute,
+                input_file, output_file, mute=mute,
 
                 # Audio
                 audio_codecname=codec_audio, bitrate=bitrate, sample_fmt=sample_fmt, sample_rate=samplerate, 
