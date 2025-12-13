@@ -9,41 +9,147 @@ from .simplempcore import smpcore
 
 @typechecked
 def transcode(
-    # --------------------
-    # General (all media types)
+    
     input_file: str = "",
     output_file: str = "",
-    overwrite: bool = False,        # whether to overwrite existing files
-    debug: bool = False,            # print debug info
-    threads: int = 0,               # ffmpeg threads, 0 = auto
-    mute: bool = False,             # remove audio track
-    loop: int = 0,                  # loop input N times
+    overwrite: bool = False,        
+    debug: bool = False,            
+    threads: int = 0,               
+    mute: bool = False,             
+    loop: int = 0,                  
 
-    # --------------------
-    # Audio only
-    codec_audio: str = "",          # audio codec to use for conversion
-    samplerate: int = 44100,        # sample rate in Hz (defasult : 44.1khz)
-    sample_fmt: str = "",           # e.g., pcm_s16le, pcm_f32le
-    bitrate: int = 192000,          # audio bitrate for compressed formats (defasult : 192kbps)
+    codec_audio: str = "",          
+    samplerate: int = 44100,        
+    sample_fmt: str = "",          
+    bitrate_audio: int = 192000,         
 
-    # --------------------
-    # Video only
-    codec_video: str = "",          # video codec to use for conversion
-    pixel_fmt: str = "",            # yuv420p, rgb24, etc.
-    bitrate_video: int = 192000,    # video bitrate
-    width: int = 800,               # output width
-    height: int = 600,              # output height
-    frame_rate: int = 30,           # fps (default : 30fps)                        
-    crf: int = 24,                  # constant rate factor for quality-based encoding
-    preset: str = "fast",           # encoder preset
+    codec_video: str = "",          
+    pixel_fmt: str = "",            
+    bitrate_video: int = 192000,     
+    resolution = (int, int),        
+    frame_rate: int = 30,                                   
+    crf: int = 24,                  
+    preset: str = "fast",          
     profile : str = "high", 
     tune : str = "zerolatency",
 ):
     """
-    Unified media processor function for audio, video, image, and subtitles.
+    Transcode audio and/or video media files using FFmpeg.
+
+    This function serves as the main frontend for **SimppleMP** and supports
+    flexible audio and video transcoding with configurable codecs, formats,
+    and quality parameters.
+
+    Parameters are grouped in 3 categories
+
+    ---------------------------------------------------------------------------------
+    1. General
     
-    Parameters grouped by media type and relevance.
+    input_file : str
+        Path to the input media file.
+
+    output_file : str
+        Path to the output media file.
+
+    overwrite : bool, optional
+        Whether to overwrite the output file if it already exists.
+        Default is ``False``.
+
+    debug : bool, optional
+        Enable verbose debug output.
+        Default is ``False``.
+
+    threads : int, optional
+        Number of FFmpeg threads to use.
+        ``0`` means automatic thread selection.
+        Default is ``0``.
+
+    mute : bool, optional
+        Remove the audio stream from the output.
+        Default is ``False``.
+
+    loop : int, optional
+        Number of times to loop the input media.
+        ``0`` means no looping.
+        Default is ``0``.
+
+    ---------------------------------------------------------------------------------
+    2. Audio
+
+    codec_audio : str, optional
+        Audio codec to use for transcoding (e.g. ``aac``, ``mp3``, ``pcm_s16le``).
+        If empty, FFmpeg chooses a default codec.
+
+    samplerate : int, optional
+        Audio sample rate in Hz.
+        Default is ``44100``.
+
+    sample_fmt : str, optional
+        Audio sample format (e.g. ``pcm_s16le``, ``pcm_f32le``).
+        If empty, FFmpeg chooses a default format.
+
+    bitrate_audio : int, optional
+        Audio bitrate in bits per second for compressed formats.
+        Default is ``192000`` (192 kbps).
+
+    ---------------------------------------------------------------------------------
+    3. Video
+
+    codec_video : str, optional
+        Video codec to use for transcoding (e.g. ``libx264``, ``libx265``).
+        If empty, FFmpeg chooses a default codec.
+
+    pixel_fmt : str, optional
+        Video pixel format (e.g. ``yuv420p``, ``rgb24``).
+        If empty, FFmpeg chooses a default format.
+
+    bitrate_video : int, optional
+        Video bitrate in bits per second.
+        Default is ``192000``.
+
+    resolution : tuple(int, int)
+        Output video resolution as ``(width, height)``.
+        Common values include:
+        ``1920x1080``, ``1280x720``, ``854x480``,
+        ``640x480``, ``640x360``, ``320x240``.
+
+    frame_rate : int, optional
+        Output video frame rate (frames per second).
+        Default is ``30``.
+
+    crf : int, optional
+        Constant Rate Factor for quality-based encoding.
+        Lower values produce higher quality and larger files.
+        Default is ``24``.
+
+    preset : str, optional
+        Encoder preset controlling speed vs compression efficiency
+        (e.g. ``ultrafast``, ``fast``, ``medium``, ``slow``).
+        Default is ``"fast"``.
+
+    profile : str, optional
+        Video encoding profile (e.g. ``baseline``, ``main``, ``high``).
+        Default is ``"high"``.
+
+    tune : str, optional
+        Encoder tuning option (e.g. ``zerolatency``, ``film``, ``animation``).
+        Default is ``"zerolatency"``.
+
+    Returns
+    -------
+    None
+        This function performs transcoding as a side effect and does not
+        return a value.
+
+    Raises
+    ------
+    ValueError
+        If invalid or incompatible parameter values are provided.
+
+    RuntimeError
+        If FFmpeg fails during the transcoding process.
     """
+
     if debug: 
         av.logging.set_level(av.logging.DEBUG)
 
@@ -75,16 +181,19 @@ def transcode(
         ext, 
         audio_codecname=codec_audio, video_codecname=codec_video, 
         samplerate=samplerate, samplefmt=sample_fmt, pixel_fmt=pixel_fmt,
-        bitrate=bitrate, bitrate_video=bitrate_video,
+        bitrate=bitrate_audio, bitrate_video=bitrate_video,
         mediatype=mediatype,
     ):
         return
     
+    # unpack reesolution
+    width, height = resolution
+
     smpcore(
                 input_file, output_file, mute=mute,
 
                 # Audio
-                audio_codecname=codec_audio, bitrate=bitrate, sample_fmt=sample_fmt, sample_rate=samplerate, 
+                audio_codecname=codec_audio, bitrate=bitrate_audio, sample_fmt=sample_fmt, sample_rate=samplerate, 
 
                 # Video
                 video_codecname=codec_video, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
