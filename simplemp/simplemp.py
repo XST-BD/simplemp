@@ -204,5 +204,5 @@ def transcode(
                 # Video
                 video_codecname=video_encoder, bitrate_vdo=bitrate_video, frame_rate=frame_rate, pixel_fmt=pixel_fmt,
                 width=width, height=height, preset=preset, tune=tune, profile=profile, crf=crf,   
-                mediatype=mediatype,     
+                mediatype=mediatype, loop=loop    
             )

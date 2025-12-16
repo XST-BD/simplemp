@@ -21,33 +21,36 @@ def processMedia(
         width : int = 800, 
         height : int = 600,
         mute : bool = False,
+        loop : int = 0,
 ):
-    print("start processing...")
-    for packet in incontainer.demux():
+    print("Start processing...")
+
+    for _ in range(loop):
+        incontainer.seek(0)
+
+        for packet in incontainer.demux():
         
-        if packet.stream_index not in stream_map:
-            continue
+            if packet.stream_index not in stream_map:
+                continue
 
-        info = stream_map[packet.stream_index]
+            info = stream_map[packet.stream_index]
 
-        for frame in packet.decode():
+            for frame in packet.decode():
 
-            if info["type"] == "audio":
-                if not mute: 
-                    frame = info["resampler"].resample(frame)
-                    for f in frame:
-                        for outpacket in info["ostream"].encode(f):
-                            outcontainer.mux(outpacket)
+                if info["type"] == "audio":
+                    if not mute: 
+                        frame = info["resampler"].resample(frame)
+                        for f in frame:
+                            for outpacket in info["ostream"].encode(f):
+                                outcontainer.mux(outpacket)
+
+                elif info["type"] == "video": 
+                    rescaled_frame = frame.reformat(width=width, height=height, format="yuv420p") # type: ignore
+                    for outpacket in info["ostream"].encode(rescaled_frame):
+                        outcontainer.mux(outpacket)
             
-
-            elif info["type"] == "video": 
-                rescaled_frame = frame.reformat(width=width, height=height, format="yuv420p") # type: ignore
-                for outpacket in info["ostream"].encode(rescaled_frame):
-                    outcontainer.mux(outpacket)
-            
-
-            elif info["type"] == "subtitle":
-                outcontainer.mux(packet)
+                elif info["type"] == "subtitle":
+                    outcontainer.mux(packet)
 
     # Flush all streams
     for info in stream_map.values():
@@ -61,6 +64,7 @@ def smpcore(
         thread_count : int, 
         thread_type : str,
         mute : bool,
+        loop : int,
 
         # Audio
         audio_codecname : str,
@@ -138,7 +142,7 @@ def smpcore(
             print('SimpleMP: Unknown media stream detected')
 
 
-    processMedia(incontainer, outcontainer, mediatype, stream_map, width, height, mute)
+    processMedia(incontainer, outcontainer, mediatype, stream_map, width, height, mute, loop=loop)
     
     incontainer.close()
     outcontainer.close()
